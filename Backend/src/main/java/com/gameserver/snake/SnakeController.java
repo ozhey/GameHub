@@ -30,9 +30,12 @@ public class SnakeController {
     int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
     switch (message) {
       case "start":
-        GameState gameState = new GameState(playersCount, roomId);
-        gameStateMap.put(roomId, gameState);
-        gameState.start(messagingTemplate, playersCount);
+        GameState gameState = gameStateMap.get(roomId);
+        if (gameState == null) {
+          gameState = new GameState(messagingTemplate, playersCount, roomId);
+          gameStateMap.put(roomId, gameState);
+        }
+        gameState.start(playersCount);
         messagingTemplate.convertAndSend("/topic/snake_room/" + roomId, gameState);
         break;
 
@@ -80,13 +83,13 @@ public class SnakeController {
 
     int numOfPlayers = numOfPlayersInRoom.getOrDefault(roomId, 0);
     numOfPlayersInRoom.put(roomId, --numOfPlayers);
-    
+
     // if a game is in progress and there are no players, kill room
     if (numOfPlayers <= 0 && gameStateMap.containsKey(roomId)) {
-      gameStateMap.get(roomId).stopTimer();
+      gameStateMap.get(roomId).resetTimer();
       gameStateMap.remove(roomId);
     }
-    
+
     System.out.println(numOfPlayers);
   }
 
