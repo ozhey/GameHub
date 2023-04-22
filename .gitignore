@@ -1,0 +1,34 @@
+# Ignore target directory for Spring
+/backend/target/
+
+# Ignore node_modules directory for React
+/frontend/node_modules/
+
+# Ignore IntelliJ IDEA files
+/backend/.idea/
+/frontend/.idea/
+*.iml
+
+# Ignore Eclipse files
+/backend/.classpath
+/frontend/.classpath
+/backend/.project
+/frontend/.project
+/backend/.settings/
+/frontend/.settings/
+
+# Ignore logs
+/backend/*.log
+
+# Ignore build artifacts
+/backend/build/
+/frontend/build/
+/backend/dist/
+/frontend/dist/
+
+# Ignore environment-specific files
+/backend/application*.properties
+/frontend/.env
+
+# Ignore macOS files
+.DS_Store
