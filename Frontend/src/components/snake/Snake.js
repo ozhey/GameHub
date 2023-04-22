@@ -9,7 +9,7 @@ const Snake = () => {
     const wsRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState(null);
-    const [roomNum, setRoomNum] = useState(0);
+    const [roomId, setRoomId] = useState(0);
 
     useEffect(() => {
         wsRef.current = (getClientAndConnect(setIsConnected, setError));
@@ -18,23 +18,18 @@ const Snake = () => {
 
     let body = <div>Error...</div>
 
-    if (isConnected && roomNum === 0) {
-        body = <Rooms setRoomNum={setRoomNum} />
-    } else if (isConnected && roomNum > 0) {
-        body = <Board wsRef={wsRef} roomNum={roomNum} setRoomNum={setRoomNum} />
+    if (isConnected && roomId === 0) {
+        body = <Rooms setRoomNum={setRoomId} />
+    } else if (isConnected && roomId > 0) {
+        body = <Board wsRef={wsRef} roomId={roomId} setRoomId={setRoomId} />
     } else {
         body = <div>Connecting...</div>
     }
 
     return <>
         {body}
-        <button onClick={() => wsRef.current.send("/app/hello", {}, "hello!")}>
-            Send message
-        </button>
         <WebsocketStatus isConnected={isConnected} />
     </>
-
-
 
 }
 
