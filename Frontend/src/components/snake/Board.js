@@ -11,7 +11,6 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const subRef = useRef(null);
     const [gameState, setGameState] = useState(null);
     const [canvas, setCanvas] = useState({ width: 480, height: 480, color: "oldlace", scale: 20 })
-    const [winner, setWinner] = useState();
     const { height, width } = useWindowDimensions();
     let gameResult;
 
@@ -83,8 +82,11 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     }, [gameState, canvas, initBlankCanvas])
 
 
+    const winner = gameState?.winner;
     if (winner === 'Tie') {
         gameResult = <h2 className='text-shadow'>The game ended with a tie!</h2>
+    } else if (winner === "End") {
+        gameResult = <h2 className='text-shadow'>Game ended</h2>
     } else if (winner) {
         gameResult = <h2 className='text-shadow'>The last survivor is <span style={{ color: winner }}>{winner}</span></h2>
     }

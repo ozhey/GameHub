@@ -14,16 +14,17 @@ public class GameState {
     private static final int BASE_SPEED = 180;
     private static final int MAX_SPEED = 90;
     private Timer timer = null;
-    private TimerTask timerTask;
     private String roomId;
     private SimpMessagingTemplate smp;
+    private String lastSurvivor;
+    private int time;
 
     // game state attributes
     private List<Snake> snakes;
     private Apple apple;
-    private int time;
     private Canvas canvas;
     private int playersCount;
+    private String winner;
 
     public GameState(SimpMessagingTemplate smp, int playersCount, String roomId) {
         this.roomId = roomId;
@@ -39,6 +40,7 @@ public class GameState {
         for (int i = 0; i < playersCount; i++) {
             this.snakes.add(new Snake(playersCount, i, canvas, BASE_SPEED));
         }
+        this.winner = null;
         this.apple = new Apple(snakes, canvas);
     }
 
@@ -53,38 +55,64 @@ public class GameState {
     }
 
     private void gameStep() {
+        if (this.winner != null) {
+            resetTimer();
+        }
         List<Snake> newSnakes = new ArrayList<>(this.snakes.size());
-        Boolean shouldCreateApple = false;
-        Boolean didSnakeDie = false;
+        boolean shouldCreateApple = false;
+        boolean didSnakeDie = false;
         for (Snake snake : this.snakes) {
             Snake newSnake = new Snake(snake);
-            if (this.time % newSnake.getSpeed() == 0) {
-                Point newHead = Point.createNewSnakeHead(snake.getHead(), snake.getDirection(), this.canvas);
-                if (newHead.equals(newSnake.getHead())) {
+            if (newSnake.getSpeed() != 0 && this.time % newSnake.getSpeed() == 0) {
+                Point newHead = Point.createNewSnakeHead(newSnake.getHead(), newSnake.getDirection(), this.canvas);
+                if (newHead.equals(newSnake.getBody().get(1))) {
                     Point oppositeDir = new Point(newSnake.getDirection().getX() * -1,
                             newSnake.getDirection().getY() * -1);
                     newSnake.setDirection(oppositeDir);
-                    newHead = Point.createNewSnakeHead(snake.getHead(), snake.getDirection(), this.canvas);
+                    newHead = Point.createNewSnakeHead(newSnake.getHead(), oppositeDir, this.canvas);
                 }
-                if (newHead.collidesWithAnySnake(this.snakes)) { //check collision with old snakes
-                    newSnake.setSpeed(0);
+                if (newHead.collidesWithAnySnake(this.snakes)) { // check collision with old snakes
+                    newSnake.killSnake();
                     newSnakes.add(newSnake);
                     didSnakeDie = true;
-                    continue;        
+                    continue;
                 }
                 newSnake.addHead(newHead);
                 if (newHead.equals(apple.getLocation())) { // snake ate an apple
                     shouldCreateApple = true;
                     newSnake.setScore(newSnake.getScore() + 1);
-                    newSnake.setSpeed(Math.max((newSnake.getScore() % 5 == 0) ? BASE_SPEED - newSnake.getScore() * 6 : newSnake.getSpeed(), MAX_SPEED));
+                    newSnake.setSpeed(Math.max(
+                            (newSnake.getScore() % 5 == 0) ? BASE_SPEED - newSnake.getScore() * 6 : newSnake.getSpeed(),
+                            MAX_SPEED));
                 } else {
                     newSnake.removeTail();
                 }
             }
+
             newSnakes.add(newSnake);
         }
+        if (Snake.checkSnakesHeadCollisionAndKill(newSnakes)) {
+            didSnakeDie = true;
+        }
         this.snakes = newSnakes;
+        if (shouldCreateApple) {
+            this.apple = new Apple(this.snakes, canvas);
+        }
         this.time += INTERVAL;
+        if (didSnakeDie) {
+            if (playersCount == 1) {
+                this.winner = "End";
+            } else {
+                this.lastSurvivor = this.lastSurvivor == null ? Snake.findActiveSnake(this.snakes) : this.lastSurvivor;
+                if (Snake.areAllSnakesDead(this.snakes)) {
+                    if (this.lastSurvivor != null) {
+                        this.winner = this.lastSurvivor;
+                    } else {
+                        this.winner = "Tie";
+                    }
+                }
+            }
+        }
         this.smp.convertAndSend("/topic/snake_room/" + roomId, this);
     }
 
@@ -93,6 +121,10 @@ public class GameState {
             this.timer.cancel();
         }
         this.timer = new Timer();
+    }
+
+    public void changeSnakeDir(int playerId, String dir) {
+        this.snakes.get(playerId).changeDir(dir);
     }
 
     public List<Snake> getSnakes() {
@@ -111,20 +143,20 @@ public class GameState {
         this.apple = apple;
     }
 
-    public int getTime() {
-        return this.time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
     public Canvas getCanvas() {
         return this.canvas;
     }
 
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
+    }
+
+    public String getWinner() {
+        return this.winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
 
     public int getPlayersCount() {

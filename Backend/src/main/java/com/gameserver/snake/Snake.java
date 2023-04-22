@@ -47,6 +47,48 @@ public class Snake {
         this.direction = new Point(other.getDirection());
     }
 
+    public static boolean checkSnakesHeadCollisionAndKill(List<Snake> snakes) {
+        boolean didSnakeDie = false;
+        for (int i = 0; i < snakes.size(); i++) {
+            Snake snk = snakes.get(i);
+            for (int j = 0; j < snakes.size(); j++) {
+                Snake snk2 = snakes.get(j);
+                if (snk.getHead().getX() == snk2.getHead().getX() && snk.getHead().getY() == snk2.getHead().getY()
+                        && i != j) {
+                    snk.killSnake();
+                    snk2.killSnake();
+                    didSnakeDie = true;
+                }
+            }
+        }
+        return didSnakeDie;
+    }
+
+    public static String findActiveSnake(List<Snake> snakes) {
+        Snake activeSnake = null;
+        int activeCount = 0;
+        for (Snake snake : snakes) {
+            if (snake.getSpeed() != 0) {
+                activeCount++;
+                activeSnake = snake;
+            }
+        }
+        return (activeCount == 1 && activeSnake != null) ? activeSnake.getColor() : null;
+    }
+
+    public static boolean areAllSnakesDead(List<Snake> snakes) {
+        for (Snake snake : snakes) {
+            if (snake.getSpeed() != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void changeDir(String dir) {
+        this.direction = DIRECTIONS.get(dir);
+    }
+
     public void addHead(Point head) {
         this.body.add(0, head);
     }
@@ -65,6 +107,10 @@ public class Snake {
 
     public void setBody(List<Point> body) {
         this.body = body;
+    }
+
+    public void killSnake() {
+        this.speed = 0;
     }
 
     public int getSpeed() {
@@ -99,4 +145,11 @@ public class Snake {
         this.direction = direction;
     }
 
+    public int getPlayerId() {
+        return this.playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
 }
