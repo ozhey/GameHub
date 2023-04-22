@@ -65,12 +65,13 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     useEffect(() => {
         if (gameState) {
-            const { snakes, apple } = gameState;
+            const { snakes, apple: { location: apple } } = gameState;
             const context = initBlankCanvas();
             Object.values(snakes).forEach(snake => {
                 context.fillStyle = snake.color;
                 snake.body.forEach((segment) => context.fillRect(segment.x, segment.y, 1, 1))
             })
+            console.log(apple);
             context.fillStyle = 'red';
             context.beginPath();
             context.arc(apple.x + 0.5, apple.y + 0.575, 0.425, 0, 2 * Math.PI);

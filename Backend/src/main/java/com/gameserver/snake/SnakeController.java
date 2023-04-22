@@ -28,9 +28,10 @@ public class SnakeController {
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, String message) throws Exception {
     int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
+    GameState gameState;
     switch (message) {
       case "start":
-        GameState gameState = gameStateMap.get(roomId);
+        gameState = gameStateMap.get(roomId);
         if (gameState == null) {
           gameState = new GameState(messagingTemplate, playersCount, roomId);
           gameStateMap.put(roomId, gameState);
@@ -38,7 +39,12 @@ public class SnakeController {
         gameState.start(playersCount);
         messagingTemplate.convertAndSend("/topic/snake_room/" + roomId, gameState);
         break;
-
+      case "ArrowUp":
+      case "ArrowDown":
+      case "ArrowLeft":
+      case "ArrowRight":
+        gameState = gameStateMap.get(roomId);
+        break;  
       default:
         break;
     }
