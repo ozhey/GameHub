@@ -17,9 +17,9 @@ public class GameState {
     private String roomId;
     private SimpMessagingTemplate smp;
     private String lastSurvivor;
-    private int time;
-
+    
     // game state attributes
+    private int time;
     private List<Snake> snakes;
     private Apple apple;
     private Canvas canvas;
@@ -165,6 +165,10 @@ public class GameState {
 
     public void setPlayersCount(int playersCount) {
         this.playersCount = playersCount;
+    }
+
+    public int getTime() {
+        return this.time;
     }
 
 }

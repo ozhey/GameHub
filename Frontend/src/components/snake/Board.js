@@ -4,20 +4,33 @@ import { useWindowDimensions } from "../../hooks/CustomHooks";
 import { getClientAndConnect } from "../../websocket/Websocket";
 import Rooms from "../common/Rooms";
 import WebsocketStatus from "../common/WebsocketStatus";
-const MAX_WINDOW_WIDTH = 600; //The true maximum width is around 80% of the const value
+const MAX_WINDOW_WIDTH = 800; // true maximum width is around 80% of the const value
 
 const Board = ({ wsRef, roomId, setRoomId }) => {
     const canvasRef = useRef(null);
     const subRef = useRef(null);
     const [gameState, setGameState] = useState(null);
-    const [canvas, setCanvas] = useState({ width: 480, height: 480, color: "oldlace", scale: 20 })
+    const [canvas, setCanvas] = useState({ width: 0, height: 0, color: "oldlace", scale: 0 })
     const { height, width } = useWindowDimensions();
     let gameResult;
+
+    const getAdjustedCanvas = (baseCanvas) => {
+        const requiredWidth = Math.min(width, MAX_WINDOW_WIDTH);
+        const scale = requiredWidth / baseCanvas.width;
+        return {
+            width: requiredWidth * 0.8,
+            height: requiredWidth * 0.8,
+            color: baseCanvas.color,
+            scale: scale * 0.8
+        }
+    }
 
     const onMessage = (payloadString) => {
         let payload = JSON.parse(payloadString.body);
         setGameState(payload);
-        setCanvas(payload.canvas);
+        if (payload.time === 0 || canvas.width === 0) {
+            setCanvas(getAdjustedCanvas(payload.canvas));
+        }
     }
 
     const handleKeyDown = (e) => {
@@ -25,7 +38,6 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
             e.preventDefault();
         }
         wsRef.current.send(`/app/snake_room/${roomId}`, {}, e.code)
-
     }
 
     const initBlankCanvas = useCallback(
@@ -45,16 +57,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     }, []);
 
     useEffect(() => {
-        setCanvas(prevCanvas => {
-            const maxWidth = Math.min(width, MAX_WINDOW_WIDTH);
-            const multiplier = prevCanvas.width / maxWidth;
-            return {
-                width: maxWidth * 0.8,
-                height: prevCanvas.height / multiplier * 0.8,
-                color: prevCanvas.color,
-                scale: prevCanvas.scale / multiplier * 0.8
-            }
-        })
+        setCanvas(prevCanvas => getAdjustedCanvas(prevCanvas))
     }, [width, height])
 
     useEffect(() => {
@@ -70,7 +73,6 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
                 context.fillStyle = snake.color;
                 snake.body.forEach((segment) => context.fillRect(segment.x, segment.y, 1, 1))
             })
-            console.log(apple);
             context.fillStyle = 'red';
             context.beginPath();
             context.arc(apple.x + 0.5, apple.y + 0.575, 0.425, 0, 2 * Math.PI);
