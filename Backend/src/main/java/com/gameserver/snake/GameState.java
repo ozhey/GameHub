@@ -100,18 +100,7 @@ public class GameState {
         }
         this.time += INTERVAL;
         if (didSnakeDie) {
-            if (playersCount == 1) {
-                this.winner = "End";
-            } else {
-                this.lastSurvivor = this.lastSurvivor == null ? Snake.findActiveSnake(this.snakes) : this.lastSurvivor;
-                if (Snake.areAllSnakesDead(this.snakes)) {
-                    if (this.lastSurvivor != null) {
-                        this.winner = this.lastSurvivor;
-                    } else {
-                        this.winner = "Tie";
-                    }
-                }
-            }
+            this.winner = Snake.getWinnerIfAllDead(this.snakes);
         }
         this.smp.convertAndSend("/topic/snake_room/" + roomId, this);
     }

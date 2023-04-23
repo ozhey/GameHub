@@ -64,25 +64,26 @@ public class Snake {
         return didSnakeDie;
     }
 
-    public static String findActiveSnake(List<Snake> snakes) {
-        Snake activeSnake = null;
-        int activeCount = 0;
+    public static String getWinnerIfAllDead(List<Snake> snakes) {
+        int maxScore = 0;
+        boolean allDead = true;
+        String potentialWinnerColor = null;
         for (Snake snake : snakes) {
+            if (snake.getScore() == maxScore) {
+                potentialWinnerColor = "Tie";
+            } else if (snake.getScore() > maxScore) {
+                potentialWinnerColor = snake.getColor();
+                maxScore = snake.getScore();
+            }
+            maxScore = Math.max(maxScore, snake.getScore());
             if (snake.getSpeed() != 0) {
-                activeCount++;
-                activeSnake = snake;
+                allDead = false;
             }
         }
-        return (activeCount == 1 && activeSnake != null) ? activeSnake.getColor() : null;
-    }
-
-    public static boolean areAllSnakesDead(List<Snake> snakes) {
-        for (Snake snake : snakes) {
-            if (snake.getSpeed() != 0) {
-                return false;
-            }
+        if (allDead) {
+            return potentialWinnerColor;
         }
-        return true;
+        return null;
     }
 
     public void changeDir(String dir) {
@@ -152,4 +153,5 @@ public class Snake {
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
+
 }
