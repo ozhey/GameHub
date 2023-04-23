@@ -52,7 +52,6 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     useEffect(() => {
         subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage)
-        wsRef.current.send(`/app/snake_room/${roomId}`, {}, "Enter room")
         return () => subRef.current.unsubscribe();
     }, []);
 

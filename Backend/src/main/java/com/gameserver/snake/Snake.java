@@ -80,7 +80,9 @@ public class Snake {
                 allDead = false;
             }
         }
-        if (allDead) {
+        if (allDead && snakes.size() == 1) {
+            return "End";
+        } else if (allDead) {
             return potentialWinnerColor;
         }
         return null;

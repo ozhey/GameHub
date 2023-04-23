@@ -6,10 +6,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.AbstractSubProtocolEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
@@ -19,18 +21,19 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 public class SnakeController {
 
   private Map<String, GameState> gameStateMap = new HashMap<>();
-  private Map<String, String> subIdToRoomId = new HashMap<>();
+  private Map<String, Session> sessionsMap = new HashMap<>();
   private Map<String, Integer> numOfPlayersInRoom = new HashMap<>();
 
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
 
   @MessageMapping("/snake_room/{roomId}")
-  public void command(@DestinationVariable String roomId, String message) throws Exception {
-    int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
+  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
+      throws Exception {
     GameState gameState = gameStateMap.get(roomId);
     switch (message) {
       case "start":
+        int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
         if (gameState == null) {
           gameState = new GameState(messagingTemplate, playersCount, roomId);
           gameStateMap.put(roomId, gameState);
@@ -42,8 +45,9 @@ public class SnakeController {
       case "ArrowDown":
       case "ArrowLeft":
       case "ArrowRight":
-        gameState.changeSnakeDir(0, message);
-        break;  
+        int playerId = sessionsMap.get(sessionId).getPlayerId();
+        gameState.changeSnakeDir(playerId, message);
+        break;
       default:
         break;
     }
@@ -54,12 +58,10 @@ public class SnakeController {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
     String roomId = extractRoomIdFromDestination(headerAccessor.getDestination());
-    subIdToRoomId.put(sessId, roomId);
-
-    int numOfPlayers = numOfPlayersInRoom.getOrDefault(roomId, 0);
-    numOfPlayersInRoom.put(roomId, ++numOfPlayers);
-
-    System.out.println(numOfPlayers);
+    int playerId = numOfPlayersInRoom.getOrDefault(roomId, 0);
+    sessionsMap.put(sessId, new Session(roomId, playerId));
+    numOfPlayersInRoom.put(roomId, ++playerId);
+    System.out.println("room " + roomId + " has " + playerId + " players");
   }
 
   @EventListener
@@ -83,8 +85,8 @@ public class SnakeController {
   private void handleLeaveRoom(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
-    String roomId = subIdToRoomId.get(sessId);
-    subIdToRoomId.remove(sessId);
+    String roomId = sessionsMap.get(sessId).getRoomId();
+    sessionsMap.remove(sessId);
 
     int numOfPlayers = numOfPlayersInRoom.getOrDefault(roomId, 0);
     numOfPlayersInRoom.put(roomId, --numOfPlayers);
@@ -95,7 +97,7 @@ public class SnakeController {
       gameStateMap.remove(roomId);
     }
 
-    System.out.println(numOfPlayers);
+    System.out.println("room " + roomId + " has " + numOfPlayers + " players");
   }
 
 }
