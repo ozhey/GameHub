@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getClientAndConnect } from "../../websocket/Websocket";
-import Rooms from "../common/Rooms";
+import Rooms from "./Rooms";
 import WebsocketStatus from "../common/WebsocketStatus";
 import Board from "./Board";
 import './Snake.css';

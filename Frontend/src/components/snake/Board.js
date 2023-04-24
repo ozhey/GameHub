@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Scores from "./Scores";
 import { useWindowDimensions } from "../../hooks/CustomHooks";
 import { getClientAndConnect } from "../../websocket/Websocket";
-import Rooms from "../common/Rooms";
+import Rooms from "./Rooms";
 import WebsocketStatus from "../common/WebsocketStatus";
 const MAX_WINDOW_WIDTH = 800; // true maximum width is around 80% of the const value
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
-import {SNAKE, TIC_TAC_TOE} from "./consts";
+import { SNAKE, TIC_TAC_TOE } from "./consts";
 import Snake from './components/snake/Snake'
+import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 
 function App() {
   const [game, setGame] = useState(null);
@@ -10,7 +11,7 @@ function App() {
   if (game === SNAKE) {
     gameComponent = <Snake />
   } else if (game === TIC_TAC_TOE) {
-    gameComponent = <></>
+    gameComponent = <TicTacToe />
   }
 
   return (
