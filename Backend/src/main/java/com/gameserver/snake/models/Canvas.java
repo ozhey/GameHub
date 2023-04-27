@@ -1,4 +1,4 @@
-package com.gameserver.snake;
+package com.gameserver.snake.models;
 
 public class Canvas {
     private int width;

@@ -40,11 +40,11 @@ export default function TicTacToe() {
         if (squares[i] || winner) {
             return;
         }
-        setNextSymbol((prevSymbol => prevSymbol === 'X' ? 'O' : 'X'))
         setSquares((prevSquares => {
             prevSquares[i] = nextSymbol;
             return prevSquares;
         }))
+        setNextSymbol((prevSymbol => prevSymbol === 'X' ? 'O' : 'X'))
     }
 
     const restart = () => {

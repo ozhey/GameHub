@@ -1,4 +1,4 @@
-package com.gameserver.snake;
+package com.gameserver.snake.models;
 
 import java.util.List;
 
@@ -16,22 +16,6 @@ public class Point {
         this.y = other.getY();
     }
 
-    public static Point createNewSnakeHead(Point currentHead, Point dir, Canvas canvas) {
-        Point newHead = new Point(currentHead.getX() + dir.getX(), currentHead.getY() + dir.getY());
-
-        // wall collision makes snake head go to the other side
-        if (newHead.getX() * canvas.getScale() >= canvas.getWidth()) {
-            return new Point(0, newHead.getY());
-        } else if (newHead.getX() < 0) {
-            return new Point((canvas.getWidth() / canvas.getScale()) - 1, newHead.getY());
-        } else if (newHead.getY() * canvas.getScale() >= canvas.getHeight()) {
-            return new Point(newHead.getX(), 0);
-        } else if (newHead.getY() < 0) {
-            return new Point(newHead.getX(), (canvas.getHeight() / canvas.getScale()) - 1);
-        } else {
-            return newHead;
-        }
-    }
 
     public Boolean collidesWithAnySnake(List<Snake> snakes) {
         for (Snake snake : snakes) {

@@ -1,4 +1,4 @@
-package com.gameserver.snake;
+package com.gameserver.snake.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,47 +45,6 @@ public class Snake {
         this.score = other.getScore();
         this.playerId = other.playerId;
         this.direction = new Point(other.getDirection());
-    }
-
-    public static boolean checkSnakesHeadCollisionAndKill(List<Snake> snakes) {
-        boolean didSnakeDie = false;
-        for (int i = 0; i < snakes.size(); i++) {
-            Snake snk = snakes.get(i);
-            for (int j = 0; j < snakes.size(); j++) {
-                Snake snk2 = snakes.get(j);
-                if (snk.getHead().getX() == snk2.getHead().getX() && snk.getHead().getY() == snk2.getHead().getY()
-                        && i != j) {
-                    snk.killSnake();
-                    snk2.killSnake();
-                    didSnakeDie = true;
-                }
-            }
-        }
-        return didSnakeDie;
-    }
-
-    public static String getWinnerIfAllDead(List<Snake> snakes) {
-        int maxScore = 0;
-        boolean allDead = true;
-        String potentialWinnerColor = null;
-        for (Snake snake : snakes) {
-            if (snake.getScore() == maxScore) {
-                potentialWinnerColor = "Tie";
-            } else if (snake.getScore() > maxScore) {
-                potentialWinnerColor = snake.getColor();
-                maxScore = snake.getScore();
-            }
-            maxScore = Math.max(maxScore, snake.getScore());
-            if (snake.getSpeed() != 0) {
-                allDead = false;
-            }
-        }
-        if (allDead && snakes.size() == 1) {
-            return "End";
-        } else if (allDead) {
-            return potentialWinnerColor;
-        }
-        return null;
     }
 
     public void changeDir(String dir) {

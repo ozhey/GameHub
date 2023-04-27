@@ -11,17 +11,19 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.AbstractSubProtocolEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
+import com.gameserver.snake.models.Game;
+import com.gameserver.snake.models.Session;
+
 @Controller
 public class SnakeController {
 
-  private Map<String, GameState> gameStateMap = new HashMap<>();
-  private Map<String, Session> sessionsMap = new HashMap<>();
+  private Map<String, Game> gameStateMap = new HashMap<>();
+  private Map<String, Session> sessionsMap = new HashMap<>(); // session id to room id and player id
   private Map<String, Integer> numOfPlayersInRoom = new HashMap<>();
 
   @Autowired
@@ -30,12 +32,12 @@ public class SnakeController {
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
       throws Exception {
-    GameState gameState = gameStateMap.get(roomId);
+    Game gameState = gameStateMap.get(roomId);
     switch (message) {
       case "start":
         int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
         if (gameState == null) {
-          gameState = new GameState(messagingTemplate, playersCount, roomId);
+          gameState = new Game(messagingTemplate, playersCount, roomId);
           gameStateMap.put(roomId, gameState);
         }
         gameState.start(playersCount);

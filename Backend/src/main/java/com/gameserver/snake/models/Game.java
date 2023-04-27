@@ -1,4 +1,4 @@
-package com.gameserver.snake;
+package com.gameserver.snake.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,9 @@ import java.util.TimerTask;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-public class GameState {
+import com.gameserver.snake.utils.SnakeUtil;
+
+public class Game {
 
     // internal attributes
     private static final int INTERVAL = 30;
@@ -26,7 +28,7 @@ public class GameState {
     private int playersCount;
     private String winner;
 
-    public GameState(SimpMessagingTemplate smp, int playersCount, String roomId) {
+    public Game(SimpMessagingTemplate smp, int playersCount, String roomId) {
         this.roomId = roomId;
         this.smp = smp;
         newGame(playersCount);
@@ -64,12 +66,12 @@ public class GameState {
         for (Snake snake : this.snakes) {
             Snake newSnake = new Snake(snake);
             if (newSnake.getSpeed() != 0 && this.time % newSnake.getSpeed() == 0) {
-                Point newHead = Point.createNewSnakeHead(newSnake.getHead(), newSnake.getDirection(), this.canvas);
+                Point newHead = SnakeUtil.createNewSnakeHead(newSnake.getHead(), newSnake.getDirection(), this.canvas);
                 if (newHead.equals(newSnake.getBody().get(1))) {
                     Point oppositeDir = new Point(newSnake.getDirection().getX() * -1,
                             newSnake.getDirection().getY() * -1);
                     newSnake.setDirection(oppositeDir);
-                    newHead = Point.createNewSnakeHead(newSnake.getHead(), oppositeDir, this.canvas);
+                    newHead = SnakeUtil.createNewSnakeHead(newSnake.getHead(), oppositeDir, this.canvas);
                 }
                 if (newHead.collidesWithAnySnake(this.snakes)) { // check collision with old snakes
                     newSnake.killSnake();
@@ -91,7 +93,7 @@ public class GameState {
 
             newSnakes.add(newSnake);
         }
-        if (Snake.checkSnakesHeadCollisionAndKill(newSnakes)) {
+        if (SnakeUtil.checkSnakesHeadCollisionAndKill(newSnakes)) {
             didSnakeDie = true;
         }
         this.snakes = newSnakes;
@@ -100,7 +102,7 @@ public class GameState {
         }
         this.time += INTERVAL;
         if (didSnakeDie) {
-            this.winner = Snake.getWinnerIfAllDead(this.snakes);
+            this.winner = SnakeUtil.getWinnerIfAllDead(this.snakes);
         }
         this.smp.convertAndSend("/topic/snake_room/" + roomId, this);
     }
