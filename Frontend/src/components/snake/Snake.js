@@ -9,7 +9,7 @@ const Snake = () => {
     const wsRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState(null);
-    const [roomId, setRoomId] = useState(0);
+    const [roomId, setRoomId] = useState("");
 
     useEffect(() => {
         wsRef.current = (getClientAndConnect(setIsConnected, setError));
@@ -18,9 +18,9 @@ const Snake = () => {
 
     let body = <div>Error...</div>
 
-    if (isConnected && roomId === 0) {
+    if (isConnected && roomId === "") {
         body = <Rooms setRoomNum={setRoomId} />
-    } else if (isConnected && roomId > 0) {
+    } else if (isConnected && roomId !== "") {
         body = <Board wsRef={wsRef} roomId={roomId} setRoomId={setRoomId} />
     } else {
         body = <div>Connecting...</div>

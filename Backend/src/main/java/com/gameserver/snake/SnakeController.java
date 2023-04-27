@@ -22,9 +22,9 @@ import com.gameserver.snake.models.Session;
 @Controller
 public class SnakeController {
 
-  private Map<String, Game> gameStateMap = new HashMap<>();
-  private Map<String, Session> sessionsMap = new HashMap<>(); // session id to room id and player id
-  private Map<String, Integer> numOfPlayersInRoom = new HashMap<>();
+  private Map<String, Game> roomIdToGame = new HashMap<>();
+  private Map<String, Session> sessionIdToSession = new HashMap<>();
+  private Map<String, Integer> roomIdToPlayersCount = new HashMap<>();
 
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
@@ -32,23 +32,23 @@ public class SnakeController {
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
       throws Exception {
-    Game gameState = gameStateMap.get(roomId);
+    Game game = roomIdToGame.get(roomId);
     switch (message) {
       case "start":
-        int playersCount = numOfPlayersInRoom.getOrDefault(roomId, 0);
-        if (gameState == null) {
-          gameState = new Game(messagingTemplate, playersCount, roomId);
-          gameStateMap.put(roomId, gameState);
+        int playersCount = roomIdToPlayersCount.getOrDefault(roomId, 0);
+        if (game == null) {
+          game = new Game(messagingTemplate, playersCount, roomId);
+          roomIdToGame.put(roomId, game);
         }
-        gameState.start(playersCount);
-        messagingTemplate.convertAndSend("/topic/snake_room/" + roomId, gameState);
+        game.start(playersCount);
+        messagingTemplate.convertAndSend("/topic/snake_room/" + roomId, game);
         break;
       case "ArrowUp":
       case "ArrowDown":
       case "ArrowLeft":
       case "ArrowRight":
-        int playerId = sessionsMap.get(sessionId).getPlayerId();
-        gameState.changeSnakeDir(playerId, message);
+        int playerId = sessionIdToSession.get(sessionId).getPlayerId();
+        game.changeSnakeDir(playerId, message);
         break;
       default:
         break;
@@ -58,11 +58,15 @@ public class SnakeController {
   @EventListener
   public void handleSessionSubscribe(SessionSubscribeEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+    if (headerAccessor.getDestination() != null &&
+        !headerAccessor.getDestination().startsWith("/topic/snake")) { // player subscribed to other game
+      return;
+    }
     String sessId = headerAccessor.getSessionId();
     String roomId = extractRoomIdFromDestination(headerAccessor.getDestination());
-    int playerId = numOfPlayersInRoom.getOrDefault(roomId, 0);
-    sessionsMap.put(sessId, new Session(roomId, playerId));
-    numOfPlayersInRoom.put(roomId, ++playerId);
+    int playerId = roomIdToPlayersCount.getOrDefault(roomId, 0);
+    sessionIdToSession.put(sessId, new Session(roomId, playerId));
+    roomIdToPlayersCount.put(roomId, ++playerId);
     System.out.println("room " + roomId + " has " + playerId + " players");
   }
 
@@ -87,16 +91,19 @@ public class SnakeController {
   private void handleLeaveRoom(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
-    String roomId = sessionsMap.get(sessId).getRoomId();
-    sessionsMap.remove(sessId);
+    if (!sessionIdToSession.containsKey(sessId)) { // user does not play snake
+      return;
+    }
+    String roomId = sessionIdToSession.get(sessId).getRoomId();
+    sessionIdToSession.remove(sessId);
 
-    int numOfPlayers = numOfPlayersInRoom.getOrDefault(roomId, 0);
-    numOfPlayersInRoom.put(roomId, --numOfPlayers);
+    int numOfPlayers = roomIdToPlayersCount.getOrDefault(roomId, 0);
+    roomIdToPlayersCount.put(roomId, --numOfPlayers);
 
     // if a game is in progress and there are no players, kill room
-    if (numOfPlayers <= 0 && gameStateMap.containsKey(roomId)) {
-      gameStateMap.get(roomId).resetTimer();
-      gameStateMap.remove(roomId);
+    if (numOfPlayers <= 0 && roomIdToGame.containsKey(roomId)) {
+      roomIdToGame.get(roomId).resetTimer();
+      roomIdToGame.remove(roomId);
     }
 
     System.out.println("room " + roomId + " has " + numOfPlayers + " players");

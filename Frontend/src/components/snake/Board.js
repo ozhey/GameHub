@@ -108,7 +108,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
                         className='button-red'>Start game
                     </button>
                     <button
-                        onClick={() => setRoomId(0)} // go back to rooms page
+                        onClick={() => setRoomId("")} // go back to rooms page
                         className='button-red'>Back to menu
                     </button>
                 </div>

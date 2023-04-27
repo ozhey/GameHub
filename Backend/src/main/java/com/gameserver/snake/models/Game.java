@@ -18,7 +18,6 @@ public class Game {
     private Timer timer = null;
     private String roomId;
     private SimpMessagingTemplate smp;
-    private String lastSurvivor;
     
     // game state attributes
     private int time;

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Snake {
-    private static final int BASE_SPEED = 1;
     private static final String[] COLORS = { "Green", "Brown", "Aquamarine", "Pink", "Gold", "Orange", "Red", "Blue",
             "Purple", "Cyan" };
     private static final Map<String, Point> DIRECTIONS = Map.of(

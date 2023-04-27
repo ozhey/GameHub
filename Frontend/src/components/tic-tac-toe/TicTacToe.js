@@ -1,93 +1,47 @@
-import { useState } from 'react';
-import './TicTacToe.css'
+import React, { useEffect, useRef, useState } from "react";
+import { getClientAndConnect } from "../../websocket/Websocket";
+import WebsocketStatus from "../common/WebsocketStatus";
+import Board from "./Board";
+import './TicTacToe.css';
 
-function Square({ value, onSquareClick }) {
-    return (
-        <button className={`square ${value === 'X' ? 'x' : value === 'O' ? 'o' : ''}`} onClick={onSquareClick}>
-            {value}
-        </button>
-    );
-}
+const TicTacToe = () => {
+    const wsRef = useRef(null);
+    const waitingRoomSub = useRef(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const [error, setError] = useState(null);
+    const [roomId, setRoomId] = useState("");
 
-function Board({ squares, onPlay }) {
-    return (
-        <>
-            <div className="board-row">
-                <Square value={squares[0]} onSquareClick={() => onPlay(0)} />
-                <Square value={squares[1]} onSquareClick={() => onPlay(1)} />
-                <Square value={squares[2]} onSquareClick={() => onPlay(2)} />
-            </div>
-            <div className="board-row">
-                <Square value={squares[3]} onSquareClick={() => onPlay(3)} />
-                <Square value={squares[4]} onSquareClick={() => onPlay(4)} />
-                <Square value={squares[5]} onSquareClick={() => onPlay(5)} />
-            </div>
-            <div className="board-row">
-                <Square value={squares[6]} onSquareClick={() => onPlay(6)} />
-                <Square value={squares[7]} onSquareClick={() => onPlay(7)} />
-                <Square value={squares[8]} onSquareClick={() => onPlay(8)} />
-            </div>
-        </>
-    );
-}
+    const onRoomFound = (roomId) => {
+        setRoomId(roomId.body);
+        waitingRoomSub.current.unsubscribe();
+    }
 
-export default function TicTacToe() {
-    const [squares, setSquares] = useState({});
-    const [nextSymbol, setNextSymbol] = useState('X');
-    const winner = calculateWinner(squares);
+    useEffect(() => {
+        wsRef.current = (getClientAndConnect(setIsConnected, setError));
+        return () => wsRef.current.disconnect();
+    }, []);
 
-    const onPlay = (i) => {
-        if (squares[i] || winner) {
-            return;
+    useEffect(() => {
+        if (isConnected) {
+            waitingRoomSub.current = wsRef.current.subscribe("/topic/ttt/waiting_room", onRoomFound)
         }
-        setSquares((prevSquares => {
-            prevSquares[i] = nextSymbol;
-            return prevSquares;
-        }))
-        setNextSymbol((prevSymbol => prevSymbol === 'X' ? 'O' : 'X'))
-    }
+    }, [isConnected]);
 
-    const restart = () => {
-        setSquares({});
-        setNextSymbol('X');
-    }
+    let body = <div>Error...</div>
 
-    let status;
-    if (winner) {
-        status = 'Winner: ' + winner;
+    if (isConnected && roomId === "") {
+        body = <div>Searching for a room...</div>
+    } else if (isConnected && roomId !== "") {
+        body = <Board wsRef={wsRef} roomId={roomId}/>
     } else {
-        status = 'Next player: ' + nextSymbol;
+        body = <div>Connecting...</div>
     }
 
-    return (
-        <div className="game">
-            <div className="game-board">
-                <div className="status">{status}</div>
-                <Board squares={squares} onPlay={onPlay} />
-                <div className="game-info">
-                    <button onClick={() => restart()}>Restart</button>
-                </div>
-            </div>
-        </div>
-    );
+    return <>
+        {body}
+        <WebsocketStatus isConnected={isConnected} />
+    </>
+
 }
 
-function calculateWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
-        }
-    }
-    return null;
-}
+export default TicTacToe;
