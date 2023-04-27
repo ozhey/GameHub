@@ -10,7 +10,7 @@ const Scores = ({ gameState }) => {
 
     return (
         <>
-            <h2 className='text-shadow'>Scores:</h2>
+            <h2 className='text-shadow'>{scores.length > 1 ? 'Scores:' : 'Score:'}</h2>
             <div className='flex-scores'>
                 {scores}
             </div>

@@ -4,7 +4,7 @@ import { useWindowDimensions } from "../../hooks/CustomHooks";
 import { getClientAndConnect } from "../../websocket/Websocket";
 import Rooms from "./Rooms";
 import WebsocketStatus from "../common/WebsocketStatus";
-const MAX_WINDOW_WIDTH = 800; // true maximum width is around 80% of the const value
+const MAX_WINDOW_WIDTH = 700; // true maximum width is around 80% of the const value
 
 const Board = ({ wsRef, roomId, setRoomId }) => {
     const canvasRef = useRef(null);
