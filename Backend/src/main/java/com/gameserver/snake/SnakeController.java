@@ -37,6 +37,7 @@ public class SnakeController {
       case "start":
         int playersCount = playersNumByRoom.getOrDefault(roomId, 0);
         if (game == null) {
+          log("A new game has been created for room " + roomId);
           game = new Game(smp, playersCount, roomId);
           roomIdToGame.put(roomId, game);
         }
@@ -67,7 +68,7 @@ public class SnakeController {
     int playerId = playersNumByRoom.getOrDefault(roomId, 0);
     sessionIdToSession.put(sessId, new UserSession(roomId, playerId));
     playersNumByRoom.put(roomId, ++playerId);
-    System.out.println("room " + roomId + " has " + playerId + " players");
+    log("room " + roomId + " has " + playerId + " players");
   }
 
   @EventListener
@@ -100,13 +101,19 @@ public class SnakeController {
     int numOfPlayers = playersNumByRoom.getOrDefault(roomId, 0);
     playersNumByRoom.put(roomId, --numOfPlayers);
 
+    log("room " + roomId + " has " + numOfPlayers + " players");
+
     // if a game is in progress and there are no players, kill room
     if (numOfPlayers <= 0 && roomIdToGame.containsKey(roomId)) {
       roomIdToGame.get(roomId).resetTimer();
       roomIdToGame.remove(roomId);
+      log("room " + roomId + " is empty, deleting game instance");
     }
 
-    System.out.println("room " + roomId + " has " + numOfPlayers + " players");
+  }
+
+  private void log(String log) {
+    System.out.println("[snake]: " + log);
   }
 
 }

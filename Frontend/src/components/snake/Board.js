@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Scores from "./Scores";
 import { useWindowDimensions } from "../../hooks/CustomHooks";
-import { getClientAndConnect } from "../../websocket/Websocket";
-import Rooms from "./Rooms";
-import WebsocketStatus from "../common/WebsocketStatus";
 const MAX_WINDOW_WIDTH = 700; // true maximum width is around 80% of the const value
 
 const Board = ({ wsRef, roomId, setRoomId }) => {
@@ -11,27 +8,32 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const subRef = useRef(null);
     const [gameState, setGameState] = useState(null);
     const [canvas, setCanvas] = useState({ width: 0, height: 0, color: "oldlace", scale: 0 })
+    const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, color: "oldlace", scale: 0})
     const { height, width } = useWindowDimensions();
     let gameResult;
 
     const getAdjustedCanvas = (baseCanvas) => {
-        const requiredWidth = Math.min(width, MAX_WINDOW_WIDTH);
+        const requiredWidth = Math.min(width, MAX_WINDOW_WIDTH) * 0.8;
         const scale = requiredWidth / baseCanvas.width;
         return {
-            width: requiredWidth * 0.8,
-            height: requiredWidth * 0.8,
+            width: requiredWidth,
+            height: requiredWidth,
             color: baseCanvas.color,
-            scale: scale * 0.8
+            scale: scale
         }
     }
 
     const onMessage = (payloadString) => {
         let payload = JSON.parse(payloadString.body);
         setGameState(payload);
-        if (payload.time === 0 || canvas.width === 0) {
-            setCanvas(getAdjustedCanvas(payload.canvas));
+        if (payload.time === 0 || canvasDimensions.width === 0) {
+            setCanvasDimensions(payload.canvas)
         }
     }
+
+    useEffect(() => {
+        setCanvas(getAdjustedCanvas(canvasDimensions))
+    }, [canvasDimensions, width, height])
 
     const handleKeyDown = (e) => {
         if (e.preventDefault && (e.code === 'ArrowUp' || e.code === 'ArrowDown' || e.code === 'ArrowLeft' || e.code === 'ArrowRight')) {
@@ -40,24 +42,17 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
         wsRef.current.send(`/app/snake_room/${roomId}`, {}, e.code)
     }
 
-    const initBlankCanvas = useCallback(
-        () => {
-            const context = canvasRef.current.getContext("2d");
-            context.fillStyle = canvas.color;
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            return context;
-        },
-        [canvas],
-    );
+    const initBlankCanvas = useCallback(() => {
+        const context = canvasRef.current.getContext("2d");
+        context.fillStyle = canvas.color;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        return context;
+    },[canvas],);
 
     useEffect(() => {
         subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage)
         return () => subRef.current.unsubscribe();
     }, []);
-
-    useEffect(() => {
-        setCanvas(prevCanvas => getAdjustedCanvas(prevCanvas))
-    }, [width, height])
 
     useEffect(() => {
         const context = initBlankCanvas();

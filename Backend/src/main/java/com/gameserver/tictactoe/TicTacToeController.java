@@ -110,11 +110,11 @@ public class TicTacToeController {
     } else {
       String roomId = generateRoomId(); // generate room number
 
-      System.out.println("sending tictactoe room " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
+      log("sending room id " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
       smp.convertAndSend("/topic/ttt/waiting_room", roomId);
       this.waitingUserSessId = "";
     }
-    System.out.println("currently waiting: " + (this.waitingUserSessId.equals("") ? "no one" : this.waitingUserSessId));
+    log("currently waiting for a match: " + (this.waitingUserSessId.equals("") ? "no one" : this.waitingUserSessId));
   }
 
   private void handleJoinGameRoom(StompHeaderAccessor headerAccessor, String dest) {
@@ -124,14 +124,18 @@ public class TicTacToeController {
     // player joined an existing room
     if (this.roomIdToGame.containsKey(roomId)) {
       this.sessIdToRoomId.put(sessId, roomId);
-      System.out.println("user " + sessId + " joined room " + roomId);
+      log("user " + sessId + " joined room " + roomId);
       return;
     }
 
     // player is the first player in the room, create a new game
     this.sessIdToRoomId.put(sessId, roomId);
     this.roomIdToGame.put(roomId, new Game(smp, roomId));
-    System.out.println("tic tac toe game room created. room id: " + roomId + " user: " + sessId);
+    log("game room created. room id: " + roomId + " user: " + sessId);
+  }
+
+  private void log(String log) {
+    System.out.println("[tictactoe]: " + log);
   }
 
 }
