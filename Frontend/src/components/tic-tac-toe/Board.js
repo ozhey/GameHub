@@ -3,13 +3,19 @@ import './TicTacToe.css'
 import Squares from './Squares';
 
 
-const Board = ({ wsRef, roomId }) => {
+const Board = ({ wsRef, roomId, setRoomId }) => {
     const subRef = useRef(null);
     const [squares, setSquares] = useState([['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-']]);
     const [nextSymbol, setNextSymbol] = useState('X');
     const [winner, setWinner] = useState('-');
 
     const onMessage = (payloadString) => {
+        if (payloadString.body === "end") {
+            alert("The opponet has left the match. Returning to the waiting room.")
+            setRoomId("");
+            return;
+        }
+        
         let payload = JSON.parse(payloadString.body);
         let squares = payload.board.map(str => str.split(''));
         setSquares(squares);

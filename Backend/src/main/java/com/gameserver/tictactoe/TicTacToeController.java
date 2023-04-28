@@ -90,10 +90,22 @@ public class TicTacToeController {
     if (!(this.waitingUserSessId.equals(sessId)) && !this.sessIdToRoomId.containsKey(sessId)) {
       return;
     }
+    
+    if (this.waitingUserSessId.equals(sessId)) {
+      this.waitingUserSessId = "";
+      log("user " + sessId + "left the waiting room");
+    }
 
     String roomId = this.sessIdToRoomId.get(sessId);
-    if (roomId != null) { // player left an active game
+    if (roomId != null && this.roomIdToGame.containsKey(roomId)) { // player left an active game
+      log("user " + sessId + " left room " + roomId + ". letting the other player know and deleting game instance");
+      this.smp.convertAndSend("/topic/ttt_room/" + roomId, "end");
       this.roomIdToGame.remove(roomId);
+      this.sessIdToRoomId.remove(roomId);
+    }
+
+    if (roomId != null) { // player left a game but he was already alone
+      log("user " + sessId + " left room " + roomId);
       this.sessIdToRoomId.remove(roomId);
     }
 
@@ -106,15 +118,15 @@ public class TicTacToeController {
   private void handleJoinWaitingRoom(StompHeaderAccessor headerAccessor) {
     String sessId = headerAccessor.getSessionId();
     if (this.waitingUserSessId.equals("")) {
+      log("user " + sessId + " is waiting for a match");
       this.waitingUserSessId = sessId;
     } else {
       String roomId = generateRoomId(); // generate room number
 
-      log("sending room id " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
+      log("match found. sending room id " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
       smp.convertAndSend("/topic/ttt/waiting_room", roomId);
       this.waitingUserSessId = "";
     }
-    log("currently waiting for a match: " + (this.waitingUserSessId.equals("") ? "no one" : this.waitingUserSessId));
   }
 
   private void handleJoinGameRoom(StompHeaderAccessor headerAccessor, String dest) {

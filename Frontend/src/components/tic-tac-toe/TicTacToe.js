@@ -23,17 +23,17 @@ const TicTacToe = () => {
     }, []);
 
     useEffect(() => {
-        if (isConnected) {
+        if (isConnected && roomId === "") {
             waitingRoomSub.current = wsRef.current.subscribe("/topic/ttt/waiting_room", onRoomFound)
         }
-    }, [isConnected]);
+    }, [isConnected, roomId]);
 
     let body = <div>Error...</div>
 
     if (isConnected && roomId === "") {
         body = <Spinner />
     } else if (isConnected && roomId !== "") {
-        body = <Board wsRef={wsRef} roomId={roomId}/>
+        body = <Board wsRef={wsRef} roomId={roomId} setRoomId={setRoomId}/>
     } else {
         body = <div>Connecting...</div>
     }

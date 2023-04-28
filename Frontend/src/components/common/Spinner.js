@@ -5,7 +5,7 @@ function Spinner(props) {
   return (
     <div className="spinner-container">
       <div className="spinner"></div>
-      <div className="spinner-text">Waiting for an opponet</div>
+      <div className="spinner-text">Searching for a match...</div>
     </div>
   );
 }
