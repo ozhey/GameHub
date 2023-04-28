@@ -105,11 +105,11 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
                 <div className='options'>
                     <button
                         onClick={() => wsRef.current.send(`/app/snake_room/${roomId}`, {}, "start")}
-                        className='button-red'>Start game
+                        className='snake-button red'>Start game
                     </button>
                     <button
                         onClick={() => setRoomId("")} // go back to rooms page
-                        className='button-red'>Back to menu
+                        className='snake-button red'>Back to menu
                     </button>
                 </div>
                 {gameResult}

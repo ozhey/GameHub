@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getClientAndConnect } from "../../websocket/Websocket";
 import WebsocketStatus from "../common/WebsocketStatus";
 import Board from "./Board";
+import Spinner from "../common/Spinner";
 import './TicTacToe.css';
 
 const TicTacToe = () => {
@@ -30,7 +31,7 @@ const TicTacToe = () => {
     let body = <div>Error...</div>
 
     if (isConnected && roomId === "") {
-        body = <div>Searching for a room...</div>
+        body = <Spinner />
     } else if (isConnected && roomId !== "") {
         body = <Board wsRef={wsRef} roomId={roomId}/>
     } else {
