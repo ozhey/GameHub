@@ -11,7 +11,7 @@ import com.gameserver.snake.utils.SnakeUtil;
 
 public class Game {
 
-    // internal attributes
+    // internal attributes - not sent over websocket
     private static final int INTERVAL = 30;
     private static final int BASE_SPEED = 180;
     private static final int MAX_SPEED = 90;
@@ -19,7 +19,7 @@ public class Game {
     private String roomId;
     private SimpMessagingTemplate smp;
     
-    // game state attributes
+    // game state attributes - sent over websocket
     private int time;
     private List<Snake> snakes;
     private Apple apple;

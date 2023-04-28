@@ -12,8 +12,8 @@ const TicTacToe = () => {
     const [roomId, setRoomId] = useState("");
 
     const onRoomFound = (roomId) => {
-        setRoomId(roomId.body);
         waitingRoomSub.current.unsubscribe();
+        setRoomId(roomId.body);
     }
 
     useEffect(() => {

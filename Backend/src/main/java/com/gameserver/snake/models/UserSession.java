@@ -1,10 +1,10 @@
 package com.gameserver.snake.models;
 
-public class Session {
+public class UserSession {
     private String roomId;
     private int playerId;
 
-    public Session(String roomId, int playerNum) {
+    public UserSession(String roomId, int playerNum) {
         this.roomId = roomId;
         this.playerId = playerNum;
     }

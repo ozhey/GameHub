@@ -17,17 +17,17 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.gameserver.snake.models.Game;
-import com.gameserver.snake.models.Session;
+import com.gameserver.snake.models.UserSession;
 
 @Controller
 public class SnakeController {
 
   private Map<String, Game> roomIdToGame = new HashMap<>();
-  private Map<String, Session> sessionIdToSession = new HashMap<>();
-  private Map<String, Integer> roomIdToPlayersCount = new HashMap<>();
+  private Map<String, UserSession> sessionIdToSession = new HashMap<>();
+  private Map<String, Integer> playersNumByRoom = new HashMap<>();
 
   @Autowired
-  private SimpMessagingTemplate messagingTemplate;
+  private SimpMessagingTemplate smp;
 
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
@@ -35,13 +35,13 @@ public class SnakeController {
     Game game = roomIdToGame.get(roomId);
     switch (message) {
       case "start":
-        int playersCount = roomIdToPlayersCount.getOrDefault(roomId, 0);
+        int playersCount = playersNumByRoom.getOrDefault(roomId, 0);
         if (game == null) {
-          game = new Game(messagingTemplate, playersCount, roomId);
+          game = new Game(smp, playersCount, roomId);
           roomIdToGame.put(roomId, game);
         }
         game.start(playersCount);
-        messagingTemplate.convertAndSend("/topic/snake_room/" + roomId, game);
+        smp.convertAndSend("/topic/snake_room/" + roomId, game);
         break;
       case "ArrowUp":
       case "ArrowDown":
@@ -58,15 +58,15 @@ public class SnakeController {
   @EventListener
   public void handleSessionSubscribe(SessionSubscribeEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-    if (headerAccessor.getDestination() != null &&
-        !headerAccessor.getDestination().startsWith("/topic/snake")) { // player subscribed to other game
+    String dest = headerAccessor.getDestination();
+    if (dest != null && !dest.startsWith("/topic/snake")) { // player subscribed to other game
       return;
     }
     String sessId = headerAccessor.getSessionId();
     String roomId = extractRoomIdFromDestination(headerAccessor.getDestination());
-    int playerId = roomIdToPlayersCount.getOrDefault(roomId, 0);
-    sessionIdToSession.put(sessId, new Session(roomId, playerId));
-    roomIdToPlayersCount.put(roomId, ++playerId);
+    int playerId = playersNumByRoom.getOrDefault(roomId, 0);
+    sessionIdToSession.put(sessId, new UserSession(roomId, playerId));
+    playersNumByRoom.put(roomId, ++playerId);
     System.out.println("room " + roomId + " has " + playerId + " players");
   }
 
@@ -97,8 +97,8 @@ public class SnakeController {
     String roomId = sessionIdToSession.get(sessId).getRoomId();
     sessionIdToSession.remove(sessId);
 
-    int numOfPlayers = roomIdToPlayersCount.getOrDefault(roomId, 0);
-    roomIdToPlayersCount.put(roomId, --numOfPlayers);
+    int numOfPlayers = playersNumByRoom.getOrDefault(roomId, 0);
+    playersNumByRoom.put(roomId, --numOfPlayers);
 
     // if a game is in progress and there are no players, kill room
     if (numOfPlayers <= 0 && roomIdToGame.containsKey(roomId)) {

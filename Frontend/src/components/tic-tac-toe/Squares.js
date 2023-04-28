@@ -8,8 +8,6 @@ const Square = ({ value, onClick }) => {
 
 const Squares = ({ squares, onPlay }) => {
 
-    console.log(squares);
-
     return (
         <>
             <div className="board-row">

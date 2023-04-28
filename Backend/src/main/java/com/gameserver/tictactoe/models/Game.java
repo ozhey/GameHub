@@ -1,15 +1,44 @@
 package com.gameserver.tictactoe.models;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 public class Game {
+
+    // internal attributes - not sent over websocket
+    private SimpMessagingTemplate smp;
+    private String roomId;
+
+    // game state attributes - sent over websocket
     private char[][] board;
-    private char currentPlayer;
+    private char nextSymbol;
     private char winner;
 
-    public Game() {
+    public Game(SimpMessagingTemplate smp, String roomId) {
+        this.smp = smp;
+        this.roomId = roomId;
+        newGame();
+    }
+
+    public void resetGame() {
+        newGame();
+    }
+
+    public void makeMove(int row, int col) {
+        if ((row < 0 || row > 2 || col < 0 || col > 2) || (board[row][col] != '-')) {
+            return;
+        }
+        board[row][col] = this.nextSymbol;
+        this.nextSymbol = this.nextSymbol == 'X' ? 'O' : 'X';
+        this.winner = calcWinner();
+        this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
+    }
+
+    private void newGame() {
         this.board = new char[3][3];
-        this.currentPlayer = 'X';
+        this.nextSymbol = 'X';
         this.winner = '-';
         initializeBoard();
+        this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
     }
 
     private void initializeBoard() {
@@ -18,15 +47,6 @@ public class Game {
                 board[row][col] = '-';
             }
         }
-    }
-
-    public void makeMove(int row, int col) {
-        if ((row < 0 || row > 2 || col < 0 || col > 2) || (board[row][col] != '-')) {
-            return;
-        }
-        board[row][col] = this.currentPlayer;
-        this.currentPlayer = this.currentPlayer == 'X' ? 'O' : 'X';
-        this.winner = calcWinner();
     }
 
     private char calcWinner() {
@@ -59,14 +79,6 @@ public class Game {
         return '-';
     }
 
-    public char getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public void setCurrentPlayer(char player) {
-        currentPlayer = player;
-    }
-
     public char[][] getBoard() {
         return board;
     }
@@ -81,5 +93,13 @@ public class Game {
 
     public void setWinner(char winner) {
         this.winner = winner;
+    }
+
+    public char getNextSymbol() {
+        return this.nextSymbol;
+    }
+
+    public void setNextSymbol(char nextSymbol) {
+        this.nextSymbol = nextSymbol;
     }
 }
