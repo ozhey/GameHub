@@ -1,7 +1,8 @@
 package com.gameserver.snake.models;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,36 +19,39 @@ public class Game {
     private Timer timer = null;
     private String roomId;
     private SimpMessagingTemplate smp;
-    
+
     // game state attributes - sent over websocket
     private int time;
-    private List<Snake> snakes;
+    private Map<String, Snake> snakes;
     private Apple apple;
     private Canvas canvas;
     private int playersCount;
     private String winner;
 
-    public Game(SimpMessagingTemplate smp, int playersCount, String roomId) {
+    public Game(SimpMessagingTemplate smp, ArrayList<String> players, String roomId) {
         this.roomId = roomId;
         this.smp = smp;
-        newGame(playersCount);
+        newGame(players);
     }
 
-    private void newGame(int playersCount) {
-        this.playersCount = playersCount;
+    private void newGame(ArrayList<String> players) {
+        this.playersCount = players.size();
         this.canvas = new Canvas(playersCount);
         this.time = 0;
-        this.snakes = new ArrayList<>(playersCount);
+        this.snakes = new HashMap<>(playersCount);
         for (int i = 0; i < playersCount; i++) {
-            this.snakes.add(new Snake(playersCount, i, canvas, BASE_SPEED));
+            this.snakes.put(players.get(i), new Snake(playersCount, i, players.get(i), canvas, BASE_SPEED));
         }
         this.winner = null;
         this.apple = new Apple(snakes, canvas);
     }
 
-    public void start(int playersCount) {
+    public void resetGame(ArrayList<String> players) {
         resetTimer();
-        newGame(playersCount);
+        newGame(players);
+    }
+
+    public void start(ArrayList<String> players) {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 gameStep();
@@ -59,11 +63,11 @@ public class Game {
         if (this.winner != null) {
             resetTimer();
         }
-        List<Snake> newSnakes = new ArrayList<>(this.snakes.size());
+        Map<String, Snake> newSnakes = new HashMap<>(this.snakes.size());
         boolean shouldCreateApple = false;
         boolean didSnakeDie = false;
-        for (Snake snake : this.snakes) {
-            Snake newSnake = new Snake(snake);
+        for (Map.Entry<String, Snake> snakeEntry : this.snakes.entrySet()) {
+            Snake newSnake = new Snake(snakeEntry.getValue());
             if (newSnake.getSpeed() != 0 && this.time % newSnake.getSpeed() == 0) {
                 Point newHead = SnakeUtil.createNewSnakeHead(newSnake.getHead(), newSnake.getDirection(), this.canvas);
                 if (newHead.equals(newSnake.getBody().get(1))) {
@@ -74,7 +78,7 @@ public class Game {
                 }
                 if (newHead.collidesWithAnySnake(this.snakes)) { // check collision with old snakes
                     newSnake.killSnake();
-                    newSnakes.add(newSnake);
+                    newSnakes.put(snakeEntry.getKey(), newSnake);
                     didSnakeDie = true;
                     continue;
                 }
@@ -90,7 +94,7 @@ public class Game {
                 }
             }
 
-            newSnakes.add(newSnake);
+            newSnakes.put(snakeEntry.getKey(), newSnake);
         }
         if (SnakeUtil.checkSnakesHeadCollisionAndKill(newSnakes)) {
             didSnakeDie = true;
@@ -113,15 +117,23 @@ public class Game {
         this.timer = new Timer();
     }
 
-    public void changeSnakeDir(int playerId, String dir) {
+    public void changeSnakeDir(String playerId, String dir) {
         this.snakes.get(playerId).changeDir(dir);
     }
 
-    public List<Snake> getSnakes() {
+    public Map<String, String> FetchSnakePlayerIdToColor() {
+        Map<String, String> playerIdToColor = new HashMap<>(this.snakes.size());
+        for (Map.Entry<String, Snake> snakeEntry : this.snakes.entrySet()) {
+            playerIdToColor.put(snakeEntry.getKey(), snakeEntry.getValue().getColor());
+        }
+        return playerIdToColor;
+    }
+
+    public Map<String, Snake> getSnakes() {
         return this.snakes;
     }
 
-    public void setSnakes(List<Snake> snakes) {
+    public void setSnakes(Map<String, Snake> snakes) {
         this.snakes = snakes;
     }
 

@@ -1,6 +1,7 @@
 package com.gameserver.snake.models;
 
 import java.util.List;
+import java.util.Map;
 
 public class Point {
     private int x;
@@ -17,8 +18,8 @@ public class Point {
     }
 
 
-    public Boolean collidesWithAnySnake(List<Snake> snakes) {
-        for (Snake snake : snakes) {
+    public Boolean collidesWithAnySnake(Map<String, Snake> snakes) {
+        for (Snake snake : snakes.values()) {
             for (Point segment : snake.getBody()) {
                 if (this.x == segment.getX() && this.y == segment.getY()) {
                     return true;

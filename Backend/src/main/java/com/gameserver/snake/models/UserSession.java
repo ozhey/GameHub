@@ -2,9 +2,9 @@ package com.gameserver.snake.models;
 
 public class UserSession {
     private String roomId;
-    private int playerId;
+    private String playerId;
 
-    public UserSession(String roomId, int playerNum) {
+    public UserSession(String roomId, String playerNum) {
         this.roomId = roomId;
         this.playerId = playerNum;
     }
@@ -17,12 +17,12 @@ public class UserSession {
         this.roomId = roomId;
     }
 
-    public int getPlayerId() {
+    public String getPlayerId() {
         return this.playerId;
     }
 
-    public void setPlayerId(int playerNum) {
-        this.playerId = playerNum;
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
 }

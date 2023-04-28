@@ -17,19 +17,19 @@ public class Snake {
     private String color;
     private int score;
     private Point direction;
-    private int playerId;
+    private String playerId;
 
-    public Snake(int numOfPlayers, int playerId, Canvas canvas, int speed) {
+    public Snake(int numOfPlayers, int playerNum, String playerId, Canvas canvas, int speed) {
         body = new ArrayList<>();
         this.body.add(new Point(
-                (int) Math.floor(canvas.getWidth() / canvas.getScale() * (playerId + 1) / (numOfPlayers + 1)),
+                (int) Math.floor(canvas.getWidth() / canvas.getScale() * (playerNum + 1) / (numOfPlayers + 1)),
                 (int) Math.floor(canvas.getHeight() / canvas.getScale() * 1 / 2)));
         this.body.add(new Point(
-                (int) Math.floor(canvas.getWidth() / canvas.getScale() * (playerId + 1) / (numOfPlayers + 1)),
+                (int) Math.floor(canvas.getWidth() / canvas.getScale() * (playerNum + 1) / (numOfPlayers + 1)),
                 (int) Math.floor(canvas.getHeight() / canvas.getScale() * 1 / 2) + 1));
         this.playerId = playerId;
         this.speed = speed;
-        this.color = COLORS[playerId];
+        this.color = COLORS[playerNum];
         this.score = 0;
         this.direction = DIRECTIONS.get("ArrowUp");
     }
@@ -106,11 +106,11 @@ public class Snake {
         this.direction = direction;
     }
 
-    public int getPlayerId() {
+    public String getPlayerId() {
         return this.playerId;
     }
 
-    public void setPlayerId(int playerId) {
+    public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }
 

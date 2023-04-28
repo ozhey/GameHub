@@ -8,8 +8,10 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const subRef = useRef(null);
     const [gameState, setGameState] = useState(null);
     const [canvas, setCanvas] = useState({ width: 0, height: 0, color: "oldlace", scale: 0 })
-    const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, color: "oldlace", scale: 0})
+    const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, color: "oldlace", scale: 0 })
     const { height, width } = useWindowDimensions();
+    const [userColor, setUserColor] = useState("");
+    const [username, setUsername] = useState(Math.random().toString(36).substring(2, 10)); // random name TODO: replace with real username
     let gameResult;
 
     const getAdjustedCanvas = (baseCanvas) => {
@@ -25,10 +27,17 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     const onMessage = (payloadString) => {
         let payload = JSON.parse(payloadString.body);
-        setGameState(payload);
-        if (payload.time === 0 || canvasDimensions.width === 0) {
-            setCanvasDimensions(payload.canvas)
+
+        if (payload.snakes) { // gamestate message
+            setGameState(payload);
+            if (payload.time === 0 || canvasDimensions.width === 0) {
+                setCanvasDimensions(payload.canvas)
+            }
+            return;
         }
+
+        // else, payload is map of usernames and colors
+        setUserColor(payload[username]);
     }
 
     useEffect(() => {
@@ -47,10 +56,11 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
         context.fillStyle = canvas.color;
         context.fillRect(0, 0, canvas.width, canvas.height);
         return context;
-    },[canvas],);
+    }, [canvas],);
 
     useEffect(() => {
-        subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage)
+        subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage);
+        wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify(username));
         return () => subRef.current.unsubscribe();
     }, []);
 
@@ -84,13 +94,18 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     } else if (winner === "End") {
         gameResult = <h2 className='text-shadow'>Game ended</h2>
     } else if (winner) {
-        gameResult = <h2 className='text-shadow'>The last survivor is <span style={{ color: winner }}>{winner}</span></h2>
+        gameResult = <h2 className='text-shadow'>The winner is <span style={{ color: winner }}>{winner}</span></h2>
+    }
+
+    let userColorElement;
+    if (userColor) {
+        userColorElement = <h2 style={{ margin: '10px 0px -15px' }} className='text-shadow'>Your color is <span style={{ color: userColor }}>{userColor}</span></h2>
     }
 
     return (
         <div className='snake-game'>
             <div role="button" tabIndex="0" onKeyDown={handleKeyDown} className='snake-container'>
-                <h2 style={{ margin: '10px 0px -15px' }} className='text-shadow'>Your color is <span style={{ color: 'red' }}>red</span></h2>
+                {userColorElement}
                 <canvas style={{ display: 'block' }}
                     className='snake-canvas'
                     ref={canvasRef}

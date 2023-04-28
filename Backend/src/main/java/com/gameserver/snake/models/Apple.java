@@ -1,11 +1,12 @@
 package com.gameserver.snake.models;
 
 import java.util.List;
+import java.util.Map;
 
 public class Apple {
     private Point location;
 
-    public Apple(List<Snake> snakes, Canvas canvas) {
+    public Apple(Map<String, Snake> snakes, Canvas canvas) {
         do {
             int x = (int) Math.floor(Math.random() * canvas.getWidth() / canvas.getScale());
             int y = (int) Math.floor(Math.random() * canvas.getHeight() / canvas.getScale());
@@ -13,8 +14,8 @@ public class Apple {
         } while (checkCollision(location, snakes));
     }
 
-    private Boolean checkCollision(Point newApplePoint, List<Snake> snakes) {
-        for (Snake snake : snakes) {
+    private Boolean checkCollision(Point newApplePoint, Map<String, Snake> snakes) {
+        for (Snake snake : snakes.values()) {
             for (Point segment : snake.getBody()) {
                 if (newApplePoint.getX() == segment.getX() && newApplePoint.getY() == segment.getY()) {
                     return true;

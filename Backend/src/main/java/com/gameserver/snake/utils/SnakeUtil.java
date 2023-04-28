@@ -1,6 +1,7 @@
 package com.gameserver.snake.utils;
 
 import java.util.List;
+import java.util.Map;
 
 import com.gameserver.snake.models.Canvas;
 import com.gameserver.snake.models.Point;
@@ -15,28 +16,27 @@ public final class SnakeUtil {
         throw new IllegalStateException("Utility class");
     }
 
-    public static boolean checkSnakesHeadCollisionAndKill(List<Snake> snakes) {
+    public static boolean checkSnakesHeadCollisionAndKill(Map<String, Snake> snakes) {
         boolean didSnakeDie = false;
-        for (int i = 0; i < snakes.size(); i++) {
-            Snake snk = snakes.get(i);
-            for (int j = 0; j < snakes.size(); j++) {
-                Snake snk2 = snakes.get(j);
+        for (Snake snk : snakes.values()) {
+            for (Snake snk2 : snakes.values()) {
                 if (snk.getHead().getX() == snk2.getHead().getX() && snk.getHead().getY() == snk2.getHead().getY()
-                        && i != j) {
+                        && snk != snk2) {
                     snk.killSnake();
                     snk2.killSnake();
                     didSnakeDie = true;
                 }
             }
         }
+
         return didSnakeDie;
     }
 
-    public static String getWinnerIfAllDead(List<Snake> snakes) {
+    public static String getWinnerIfAllDead(Map<String, Snake> snakes) {
         int maxScore = 0;
         boolean allDead = true;
         String potentialWinnerColor = null;
-        for (Snake snake : snakes) {
+        for (Snake snake : snakes.values()) {
             if (snake.getScore() == maxScore) {
                 potentialWinnerColor = "Tie";
             } else if (snake.getScore() > maxScore) {

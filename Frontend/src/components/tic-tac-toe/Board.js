@@ -11,7 +11,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     const onMessage = (payloadString) => {
         if (payloadString.body === "end") {
-            alert("The opponet has left the match. Returning to the waiting room.")
+            console.log("The opponet has left the match. Returning to the waiting room.")
             setRoomId("");
             return;
         }

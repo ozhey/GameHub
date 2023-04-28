@@ -1,5 +1,6 @@
 package com.gameserver.snake;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +24,8 @@ import com.gameserver.snake.models.UserSession;
 public class SnakeController {
 
   private Map<String, Game> roomIdToGame = new HashMap<>();
-  private Map<String, UserSession> sessionIdToSession = new HashMap<>();
-  private Map<String, Integer> playersNumByRoom = new HashMap<>();
+  private Map<String, UserSession> sessionIdToUserSession = new HashMap<>();
+  private Map<String, ArrayList<String>> playersByRoom = new HashMap<>();
 
   @Autowired
   private SimpMessagingTemplate smp;
@@ -33,25 +34,33 @@ public class SnakeController {
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
       throws Exception {
     Game game = roomIdToGame.get(roomId);
+    ArrayList<String> players = playersByRoom.getOrDefault(roomId, new ArrayList<String>());
     switch (message) {
       case "start":
-        int playersCount = playersNumByRoom.getOrDefault(roomId, 0);
         if (game == null) {
           log("A new game has been created for room " + roomId);
-          game = new Game(smp, playersCount, roomId);
+          game = new Game(smp, players, roomId);
           roomIdToGame.put(roomId, game);
         }
-        game.start(playersCount);
+        game.resetGame(players);
+        Map<String, String> playerIdToColor = game.FetchSnakePlayerIdToColor();
+        smp.convertAndSend("/topic/snake_room/" + roomId, playerIdToColor);
+        game.start(players);
         smp.convertAndSend("/topic/snake_room/" + roomId, game);
         break;
       case "ArrowUp":
       case "ArrowDown":
       case "ArrowLeft":
       case "ArrowRight":
-        int playerId = sessionIdToSession.get(sessionId).getPlayerId();
+        String playerId = sessionIdToUserSession.get(sessionId).getPlayerId();
         game.changeSnakeDir(playerId, message);
         break;
-      default:
+      default: // username
+        String username = message.substring(1, message.length() - 1);
+        sessionIdToUserSession.put(sessionId, new UserSession(roomId, username));
+        players.add(username);
+        playersByRoom.put(roomId, players);
+        log("room " + roomId + " has " + players.size() + " players");
         break;
     }
   }
@@ -63,12 +72,6 @@ public class SnakeController {
     if (dest != null && !dest.startsWith("/topic/snake")) { // player subscribed to other game
       return;
     }
-    String sessId = headerAccessor.getSessionId();
-    String roomId = extractRoomIdFromDestination(headerAccessor.getDestination());
-    int playerId = playersNumByRoom.getOrDefault(roomId, 0);
-    sessionIdToSession.put(sessId, new UserSession(roomId, playerId));
-    playersNumByRoom.put(roomId, ++playerId);
-    log("room " + roomId + " has " + playerId + " players");
   }
 
   @EventListener
@@ -81,30 +84,26 @@ public class SnakeController {
     handleLeaveRoom(event);
   }
 
-  private String extractRoomIdFromDestination(String destination) {
-    // Assuming the destination format is "/room/{roomId}"
-    int lastSlashIndex = destination.lastIndexOf("/");
-    return destination.substring(lastSlashIndex + 1);
-  }
-
   // update gameStateMap and subIdToRoomId every time a user unsubscribes or
   // disconnects from a room
   private void handleLeaveRoom(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
-    if (!sessionIdToSession.containsKey(sessId)) { // user does not play snake
+    if (!sessionIdToUserSession.containsKey(sessId)) { // user does not play snake
       return;
     }
-    String roomId = sessionIdToSession.get(sessId).getRoomId();
-    sessionIdToSession.remove(sessId);
+    UserSession userSession = sessionIdToUserSession.get(sessId);
+    String roomId = userSession.getRoomId();
+    sessionIdToUserSession.remove(sessId);
 
-    int numOfPlayers = playersNumByRoom.getOrDefault(roomId, 0);
-    playersNumByRoom.put(roomId, --numOfPlayers);
+    ArrayList<String> players = playersByRoom.getOrDefault(roomId, new ArrayList<String>());
+    players.remove(userSession.getPlayerId());
+    playersByRoom.put(roomId, players);
 
-    log("room " + roomId + " has " + numOfPlayers + " players");
+    log("room " + roomId + " has " + players.size() + " players");
 
     // if a game is in progress and there are no players, kill room
-    if (numOfPlayers <= 0 && roomIdToGame.containsKey(roomId)) {
+    if (players.size() <= 0 && roomIdToGame.containsKey(roomId)) {
       roomIdToGame.get(roomId).resetTimer();
       roomIdToGame.remove(roomId);
       log("room " + roomId + " is empty, deleting game instance");

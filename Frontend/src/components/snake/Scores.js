@@ -5,6 +5,7 @@ const Scores = ({ gameState }) => {
     if (!gameState) {
         return null;
     }
+
     const scores = Object.values(gameState.snakes).map((snake) =>
         <div key={snake.color} style={{ backgroundColor: snake.color }} className='score-item'>{snake.score}</div>)
 
