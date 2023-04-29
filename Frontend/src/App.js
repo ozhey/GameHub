@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import './App.css';
 import { SNAKE, TIC_TAC_TOE } from "./consts";
 import { getClientAndConnect } from "./websocket/Websocket";
-import Spinner from "./components/common/Spinner";
+import Spinner from "./components/spinner/Spinner";
 import Snake from './components/snake/Snake'
 import TicTacToe from "./components/tic-tac-toe/TicTacToe";
-import WebsocketStatus from "./components/common/WebsocketStatus";
+import WebsocketStatus from "./components/websocket/WebsocketStatus";
 
 function App() {
   const wsRef = useRef(null);

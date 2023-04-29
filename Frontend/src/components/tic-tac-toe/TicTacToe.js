@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getClientAndConnect } from "../../websocket/Websocket";
-import WebsocketStatus from "../common/WebsocketStatus";
+import WebsocketStatus from "../websocket/WebsocketStatus";
 import Board from "./Board";
-import Spinner from "../common/Spinner";
+import Spinner from "../spinner/Spinner";
 import './TicTacToe.css';
 
 const TicTacToe = ({ wsRef }) => {
