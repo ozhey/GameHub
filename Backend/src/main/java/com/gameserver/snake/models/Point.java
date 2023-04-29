@@ -1,6 +1,5 @@
 package com.gameserver.snake.models;
 
-import java.util.List;
 import java.util.Map;
 
 public class Point {

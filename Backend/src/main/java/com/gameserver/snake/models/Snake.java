@@ -47,7 +47,9 @@ public class Snake {
     }
 
     public void changeDir(String dir) {
-        this.direction = DIRECTIONS.get(dir);
+        if (DIRECTIONS.get(dir) != null) {
+            this.direction = DIRECTIONS.get(dir);
+        }
     }
 
     public void addHead(Point head) {

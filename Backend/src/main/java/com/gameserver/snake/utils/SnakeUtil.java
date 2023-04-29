@@ -1,6 +1,5 @@
 package com.gameserver.snake.utils;
 
-import java.util.List;
 import java.util.Map;
 
 import com.gameserver.snake.models.Canvas;

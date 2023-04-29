@@ -47,8 +47,8 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const handleKeyDown = (e) => {
         if (e.preventDefault && (e.code === 'ArrowUp' || e.code === 'ArrowDown' || e.code === 'ArrowLeft' || e.code === 'ArrowRight')) {
             e.preventDefault();
+            wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "changeDir", content: e.code }));
         }
-        wsRef.current.send(`/app/snake_room/${roomId}`, {}, e.code)
     }
 
     const initBlankCanvas = useCallback(() => {
@@ -59,8 +59,9 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     }, [canvas],);
 
     useEffect(() => {
+        console.log("snake mount");
         subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage);
-        wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify(username));
+        wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "registerPlayer", content: username }));
         return () => subRef.current.unsubscribe();
     }, []);
 
@@ -114,7 +115,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
                 />
                 <div className='options'>
                     <button
-                        onClick={() => wsRef.current.send(`/app/snake_room/${roomId}`, {}, "start")}
+                        onClick={() => wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "startGame" }))}
                         className='snake-button red'>Start game
                     </button>
                     <button

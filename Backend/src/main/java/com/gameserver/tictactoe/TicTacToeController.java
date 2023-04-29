@@ -20,7 +20,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.gameserver.tictactoe.models.Game;
-import com.gameserver.tictactoe.models.Move;
+import com.gameserver.tictactoe.models.WebsocketCommand;
 
 @Controller
 public class TicTacToeController {
@@ -35,13 +35,13 @@ public class TicTacToeController {
   private SimpMessagingTemplate smp;
 
   @MessageMapping("/ttt_room/{roomId}")
-  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, Move message)
+  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, WebsocketCommand message)
       throws Exception {
     Game game = roomIdToGame.get(roomId);
     if (game == null) {
       return;
     }
-    
+
     if (message.getCommand().equals("start")) {
       game.resetGame();
     } else if (message.getCommand().equals("move")) {
@@ -90,10 +90,10 @@ public class TicTacToeController {
     if (!(this.waitingUserSessId.equals(sessId)) && !this.sessIdToRoomId.containsKey(sessId)) {
       return;
     }
-    
+
     if (this.waitingUserSessId.equals(sessId)) {
       this.waitingUserSessId = "";
-      log("user " + sessId + "left the waiting room");
+      log("user " + sessId + " left the waiting room");
     }
 
     String roomId = this.sessIdToRoomId.get(sessId);
@@ -120,13 +120,13 @@ public class TicTacToeController {
     if (this.waitingUserSessId.equals("")) {
       log("user " + sessId + " is waiting for a match");
       this.waitingUserSessId = sessId;
-    } else {
-      String roomId = generateRoomId(); // generate room number
-
-      log("match found. sending room id " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
-      smp.convertAndSend("/topic/ttt/waiting_room", roomId);
-      this.waitingUserSessId = "";
+      return;
     }
+
+    String roomId = generateRoomId(); // generate room number
+    log("match found. sending room id " + roomId + " to users " + sessId + " and " + this.waitingUserSessId);
+    smp.convertAndSend("/topic/ttt/waiting_room", roomId);
+    this.waitingUserSessId = "";
   }
 
   private void handleJoinGameRoom(StompHeaderAccessor headerAccessor, String dest) {

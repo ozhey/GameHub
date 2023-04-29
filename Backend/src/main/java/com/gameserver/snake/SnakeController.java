@@ -19,6 +19,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import com.gameserver.snake.models.Game;
 import com.gameserver.snake.models.UserSession;
+import com.gameserver.snake.models.WebsocketCommand;
 
 @Controller
 public class SnakeController {
@@ -31,12 +32,12 @@ public class SnakeController {
   private SimpMessagingTemplate smp;
 
   @MessageMapping("/snake_room/{roomId}")
-  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, String message)
+  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, WebsocketCommand message)
       throws Exception {
     Game game = roomIdToGame.get(roomId);
     ArrayList<String> players = playersByRoom.getOrDefault(roomId, new ArrayList<String>());
-    switch (message) {
-      case "start":
+    switch (message.getType()) {
+      case "startGame":
         if (game == null) {
           log("A new game has been created for room " + roomId);
           game = new Game(smp, players, roomId);
@@ -48,15 +49,12 @@ public class SnakeController {
         game.start(players);
         smp.convertAndSend("/topic/snake_room/" + roomId, game);
         break;
-      case "ArrowUp":
-      case "ArrowDown":
-      case "ArrowLeft":
-      case "ArrowRight":
+      case "changeDir":
         String playerId = sessionIdToUserSession.get(sessionId).getPlayerId();
-        game.changeSnakeDir(playerId, message);
+        game.changeSnakeDir(playerId, message.getContent());
         break;
-      default: // username
-        String username = message.substring(1, message.length() - 1);
+      case "registerPlayer":
+        String username = message.getContent();
         sessionIdToUserSession.put(sessionId, new UserSession(roomId, username));
         players.add(username);
         playersByRoom.put(roomId, players);

@@ -1,11 +1,11 @@
 package com.gameserver.tictactoe.models;
 
-public class Move {
+public class WebsocketCommand {
     private String command;
     private int row;
     private int col;
 
-    public Move(String command, int row, int col) {
+    public WebsocketCommand(String command, int row, int col) {
         this.command = command;
         this.row = row;
         this.col = col;
