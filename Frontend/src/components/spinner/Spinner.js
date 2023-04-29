@@ -1,7 +1,7 @@
 import React from 'react';
-import './Spinner.css'; // import CSS file for styling the spinner
+import './Spinner.css';
 
-function Spinner({ children }) {
+const Spinner = ({ children }) => {
 
   return (
     <div className="spinner-container">

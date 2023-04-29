@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import './App.css';
 import { SNAKE, TIC_TAC_TOE } from "./consts";
 import { getClientAndConnect } from "./websocket/Websocket";
+import GameCard from "./components/game-card/GameCard"
 import Spinner from "./components/spinner/Spinner";
 import Snake from './components/snake/Snake'
 import TicTacToe from "./components/tic-tac-toe/TicTacToe";
@@ -23,8 +24,11 @@ function App() {
   }
 
 
-  let gameComponent = null;
-  if (!isConnected) {
+  let gameComponent = <section className="gamecards" >
+    <GameCard game={SNAKE} setGame={setGame} />
+    <GameCard game={TIC_TAC_TOE} setGame={setGame} />
+  </section>;
+  if (game !== null && !isConnected) {
     gameComponent = <Spinner>Connecting...</Spinner>
   } else if (game === SNAKE) {
     gameComponent = <Snake wsRef={wsRef} />
@@ -35,12 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={() => setGame(SNAKE)}>
-        Play {SNAKE}
-      </button>
-      <button onClick={() => setGame(TIC_TAC_TOE)}>
-        Play {TIC_TAC_TOE}
-      </button>
+      <h1 className="app__title">GameHub</h1>
       {gameComponent}
       <WebsocketStatus isConnected={isConnected} />
     </div>

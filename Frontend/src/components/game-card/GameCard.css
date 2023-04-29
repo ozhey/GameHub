@@ -1,0 +1,24 @@
+.gamecards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.gamecard {
+    background-color: var(--primary-color-1);
+    padding: 20px;
+    width: 200px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.gamecard__img {
+    width: 200px;
+}
+
+.gamecard__title {
+    margin: 15px 0px 5px;
+}

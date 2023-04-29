@@ -11,4 +11,13 @@
   text-align: center;
   background-color: var(--background-color);
   height: 100%;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.app__title {
+  color: #fdf5e6;
+  text-shadow: 3px 3px 5px #666;
+  font-size: 3rem;
+  margin: 20px;
 }
