@@ -17,7 +17,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import com.gameserver.common.models.UserSession;
+import com.gameserver.games_common.models.UserSession;
 import com.gameserver.snake.models.Game;
 import com.gameserver.snake.models.WebsocketCommand;
 
@@ -32,7 +32,8 @@ public class SnakeController {
   private SimpMessagingTemplate smp;
 
   @MessageMapping("/snake_room/{roomId}")
-  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId, WebsocketCommand message)
+  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
+      WebsocketCommand message)
       throws Exception {
     Game game = roomIdToGame.get(roomId);
     ArrayList<String> players = playersByRoom.getOrDefault(roomId, new ArrayList<String>());
