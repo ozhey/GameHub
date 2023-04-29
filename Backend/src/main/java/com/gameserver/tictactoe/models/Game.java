@@ -1,5 +1,8 @@
 package com.gameserver.tictactoe.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class Game {
@@ -7,17 +10,17 @@ public class Game {
     // internal attributes - not sent over websocket
     private SimpMessagingTemplate smp;
     private String roomId;
-    private String[] players;
 
     // game state attributes - sent over websocket
     private char[][] board;
     private char nextSymbol;
     private char winner;
+    private Map<Character, String> players;
 
     public Game(SimpMessagingTemplate smp, String roomId) {
         this.smp = smp;
         this.roomId = roomId;
-        this.players = new String[2];
+        this.players = new HashMap<>();
         newGame();
     }
 
@@ -25,10 +28,16 @@ public class Game {
         newGame();
     }
 
-    public void makeMove(int row, int col) {
+    public void makeMove(int row, int col, String playerId) {
         if ((row < 0 || row > 2 || col < 0 || col > 2) || (board[row][col] != '-')) {
             return;
         }
+
+        // validate that it's the players turn
+        if (!this.players.get(this.nextSymbol).equals(playerId)) {
+            return;
+        }
+
         board[row][col] = this.nextSymbol;
         this.nextSymbol = this.nextSymbol == 'X' ? 'O' : 'X';
         this.winner = calcWinner();
@@ -81,6 +90,16 @@ public class Game {
         return '-';
     }
 
+    public void registerPlayer(String username) {
+        if (this.players.size() == 0) {
+            players.put('X', username);
+            return;
+        }
+        players.put('O', username);
+        // second player registered, send them the game data
+        this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
+    }
+
     public char[][] getBoard() {
         return board;
     }
@@ -105,11 +124,8 @@ public class Game {
         this.nextSymbol = nextSymbol;
     }
 
-    public void registerPlayer(String username) {
-        if (players[0] !=  null) {
-            players[0] = username;
-            return;
-        }
-        players[1] = username;
+    public Map<Character, String> getPlayers() {
+        return this.players;
     }
+
 }

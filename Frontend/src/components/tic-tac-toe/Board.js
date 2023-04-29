@@ -9,6 +9,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const [nextSymbol, setNextSymbol] = useState('X');
     const [winner, setWinner] = useState('-');
     const [username, setUsername] = useState(Math.random().toString(36).substring(2, 10)); // random name TODO: replace with real username
+    const [players, setPlayers] = useState({});
 
     const onMessage = (payloadString) => {
         if (payloadString.body === "end") {
@@ -19,6 +20,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
         let payload = JSON.parse(payloadString.body);
         let squares = payload.board.map(str => str.split(''));
+        setPlayers(payload.players);
         setSquares(squares);
         setNextSymbol(payload.nextSymbol);
         setWinner(payload.winner);
@@ -48,16 +50,25 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     }
 
     let status;
-    if (winner !== '-') {
-        status = 'Winner: ' + winner;
-    } else {
-        status = 'Next player: ' + nextSymbol;
+    let winnerName = players[winner];
+    let nextPlayerName = players[nextSymbol];
+    if (nextPlayerName === username) {
+        status = <div className="status">It's your turn</div>
+    }
+    if (nextPlayerName !== username) {
+        status = <div className="status">{nextPlayerName}'s turn</div>
+    }
+    if (winnerName !== undefined && winnerName === username) {
+        status = <div className="status">You won!</div>
+    }
+    if (winnerName !== undefined && winnerName !== username) {
+        status = <div className="status">{winnerName} won!</div>
     }
 
     return (
         <div className="game">
             <div className="game-board">
-                <div className="status">{status}</div>
+                {status}
                 <Squares squares={squares} onPlay={onPlay} />
                 <div className="game-info">
                     <button onClick={() => restart()}>Restart</button>

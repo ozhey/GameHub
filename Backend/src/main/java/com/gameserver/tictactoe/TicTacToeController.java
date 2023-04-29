@@ -53,7 +53,8 @@ public class TicTacToeController {
       case "makeMove":
         game = roomIdToGame.get(roomId);
         if (game != null) {
-          game.makeMove(message.getRow(), message.getCol());
+          UserSession userSession = this.sessIdToUserSession.get(sessionId);
+          game.makeMove(message.getRow(), message.getCol(), userSession.getPlayerId());
         }
         break;
     }
@@ -133,7 +134,8 @@ public class TicTacToeController {
       return;
     }
 
-    // a short wait to let the client establish the connection, otherwise the message might drop
+    // a short wait to let the client establish the connection, otherwise the
+    // message might drop
     try {
       wait(1);
     } catch (InterruptedException e) {
