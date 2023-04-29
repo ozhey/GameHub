@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Scores from "./Scores";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
-const MAX_WINDOW_WIDTH = 700; // true maximum width is around 80% of the const value
+const MAX_WINDOW_WIDTH = 600; // true maximum width is around 80% of the const value
 
 const Board = ({ wsRef, roomId, setRoomId }) => {
     const canvasRef = useRef(null);

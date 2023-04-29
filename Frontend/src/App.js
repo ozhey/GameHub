@@ -1,47 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import './App.css';
-import { SNAKE, TIC_TAC_TOE } from "./consts";
-import { getClientAndConnect } from "./websocket/Websocket";
-import GameCard from "./components/game-card/GameCard"
-import Spinner from "./components/spinner/Spinner";
-import Snake from './components/snake/Snake'
-import TicTacToe from "./components/tic-tac-toe/TicTacToe";
-import WebsocketStatus from "./components/websocket/WebsocketStatus";
+import LoginForm from "./components/login/Login";
+import HomePage from "./components/home/HomePage";
 
 function App() {
-  const wsRef = useRef(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [wsError, setWsError] = useState(null);
-  const [game, setGame] = useState(null);
+  const [username, setUsername] = useState("");
 
-  useEffect(() => {
-    wsRef.current = (getClientAndConnect(setIsConnected, setWsError));
-    return () => wsRef.current.disconnect();
-  }, []);
+  let component = <LoginForm setUsername={setUsername} />
 
-  if (wsError) {
-    return <div>Error: {wsError}</div>
+  if (username) {
+    component = <HomePage username={username} />
   }
-
-
-  let gameComponent = <section className="gamecards" >
-    <GameCard game={SNAKE} setGame={setGame} />
-    <GameCard game={TIC_TAC_TOE} setGame={setGame} />
-  </section>;
-  if (game !== null && !isConnected) {
-    gameComponent = <Spinner>Connecting...</Spinner>
-  } else if (game === SNAKE) {
-    gameComponent = <Snake wsRef={wsRef} />
-  } else if (game === TIC_TAC_TOE) {
-    gameComponent = <TicTacToe wsRef={wsRef} />
-  }
-
 
   return (
     <div className="App">
-      <h1 className="app__title" onClick={() => setGame("")}>GameHub</h1>
-      {gameComponent}
-      <WebsocketStatus isConnected={isConnected} />
+      {component}
     </div>
   );
 }

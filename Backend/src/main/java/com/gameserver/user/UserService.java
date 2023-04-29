@@ -17,6 +17,9 @@ public class UserService {
 
     public Boolean login(User user) {
         Optional<User> userByUsername = userRepository.findByUsername(user.getUsername());
+        if (!userByUsername.isPresent()) {
+            return false;
+        }
         String encodedPassword = userByUsername.get().getPassword();
         if (userByUsername.isPresent() && passwordEncoder.matches(user.getPassword(), encodedPassword)) {
             return true;

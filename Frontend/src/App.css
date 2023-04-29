@@ -15,11 +15,3 @@
   padding: 20px;
 }
 
-.app__title {
-  color: #fdf5e6;
-  text-shadow: 3px 3px 5px #666;
-  font-size: 3.2rem;
-  font-weight: 800;  
-  margin: 20px;
-  cursor: pointer;
-}

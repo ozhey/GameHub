@@ -78,22 +78,6 @@
 	background-color: var(--primary-color-2);
 }
 
-input {
-	box-sizing: border-box;
-	width: 200px;
-	padding: 5px 5px;
-	border: none;
-	border-radius: 4px;
-	text-align: center;
-	margin: 20px 0px 0px;
-	height: 35px;
-	background-color: oldlace;
-}
-
-input::placeholder {
-	font-size: 1rem;
-}
-
 .snake-game h2 {
 	margin: 5px 0px;
 }

@@ -3,12 +3,11 @@ import './TicTacToe.css'
 import Squares from './Squares';
 
 
-const Board = ({ wsRef, roomId, setRoomId }) => {
+const Board = ({ wsRef, roomId, setRoomId, username }) => {
     const subRef = useRef(null);
     const [squares, setSquares] = useState([['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-']]);
     const [nextSymbol, setNextSymbol] = useState('X');
     const [winner, setWinner] = useState('-');
-    const [username, setUsername] = useState(Math.random().toString(36).substring(2, 10)); // random name TODO: replace with real username
     const [players, setPlayers] = useState({});
 
     const onMessage = (payloadString) => {

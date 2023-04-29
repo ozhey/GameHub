@@ -17,9 +17,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         if (userService.login(user)) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("{\"username\":\"" + user.getUsername() + "\"}");
         } else {
-            return ResponseEntity.badRequest().body("Username or password is incorrect");
+            return ResponseEntity.badRequest().body("{\"error\":\"username or password is incorrect\"}");
         }
     }
 
@@ -27,9 +27,9 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody User user) {
         try {
             userService.createUser(user);
-            return ResponseEntity.ok("User created.");
+            return ResponseEntity.ok("{\"username\":\"" + user.getUsername() + "\"}");
         } catch (UserAlreadyExistsException ex) {
-            return ResponseEntity.badRequest().body("A user with this username already exists");
+            return ResponseEntity.badRequest().body("{\"error\":\"a user with this username already exists\"}");
         }
     }
 
