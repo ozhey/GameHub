@@ -9,7 +9,7 @@ const Square = ({ value, onClick }) => {
 const Squares = ({ squares, onPlay }) => {
 
     return (
-        <>
+        <div className="board">
             <div className="board-row">
                 <Square value={squares[0][0]} onClick={() => onPlay(0,0)} />
                 <Square value={squares[0][1]} onClick={() => onPlay(0,1)} />
@@ -25,7 +25,7 @@ const Squares = ({ squares, onPlay }) => {
                 <Square value={squares[2][1]} onClick={() => onPlay(2,1)} />
                 <Square value={squares[2][2]} onClick={() => onPlay(2,2)} />
             </div>
-        </>
+        </div>
     );
 }
 

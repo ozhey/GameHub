@@ -1,5 +1,14 @@
+:root {
+  --background-color: #5fa06d;
+  --primary-color-1: #fff;
+  --primary-color-2: #f2f2f2;
+  --primary-color-3: #e6e6e6;
+  --accent-color-1: #2196f3;
+  --accent-color-2: #0c7cd5;
+}
+
 .App {
   text-align: center;
-  background-color: #5fa06d;
+  background-color: var(--background-color);
   height: 100%;
 }

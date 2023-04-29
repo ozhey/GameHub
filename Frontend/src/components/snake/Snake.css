@@ -8,7 +8,6 @@ html, body {
 }
 
 .snake-game {
-	background-color: #5fa06d;
 	height: 100%;
 	min-height: 100%;
 }
@@ -49,6 +48,7 @@ html, body {
 }
 
 .snake-button {
+	background-color: var(--primary-color-1);
 	border-radius: 4px;
 	border: none;
 	cursor: pointer;
@@ -57,6 +57,10 @@ html, body {
 	width: 200px;
 	height: 35px;
 	outline: none;
+}
+
+.snake-button:hover {
+	background-color: var(--primary-color-2);
 }
 
 .rooms {
@@ -75,15 +79,11 @@ html, body {
 	width: 200px;
 	padding: 40px;
 	outline: none;
+	background-color: var(--primary-color-1);
 }
 
-.red {
-	background-color: rgb(202, 0, 17);
-	color: oldlace;
-}
-
-.red:hover {
-	background-color: rgb(223, 0, 19);
+.room-button:hover {
+	background-color: var(--primary-color-2);
 }
 
 input {
