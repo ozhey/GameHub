@@ -39,8 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="app__title">GameHub</h1>
-      <button onClick={() => setGame("")}>Return to home</button>
+      <h1 className="app__title" onClick={() => setGame("")}>GameHub</h1>
       {gameComponent}
       <WebsocketStatus isConnected={isConnected} />
     </div>
