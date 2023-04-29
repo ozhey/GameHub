@@ -7,6 +7,7 @@ public class Game {
     // internal attributes - not sent over websocket
     private SimpMessagingTemplate smp;
     private String roomId;
+    private String[] players;
 
     // game state attributes - sent over websocket
     private char[][] board;
@@ -16,6 +17,7 @@ public class Game {
     public Game(SimpMessagingTemplate smp, String roomId) {
         this.smp = smp;
         this.roomId = roomId;
+        this.players = new String[2];
         newGame();
     }
 
@@ -101,5 +103,13 @@ public class Game {
 
     public void setNextSymbol(char nextSymbol) {
         this.nextSymbol = nextSymbol;
+    }
+
+    public void registerPlayer(String username) {
+        if (players[0] !=  null) {
+            players[0] = username;
+            return;
+        }
+        players[1] = username;
     }
 }

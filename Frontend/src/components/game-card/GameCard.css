@@ -10,15 +10,25 @@
 .gamecard {
     background-color: var(--primary-color-1);
     padding: 20px;
-    width: 200px;
+    width: 300px;
     border-radius: 8px;
     cursor: pointer;
 }
 
 .gamecard__img {
-    width: 200px;
+    width: 300px;
 }
 
 .gamecard__title {
     margin: 15px 0px 5px;
+}
+
+@media only screen and (max-width: 780px) {
+	.gamecard {
+        width: 200px;
+    }
+
+    .gamecard__img {
+        width: 200px;
+    }
 }

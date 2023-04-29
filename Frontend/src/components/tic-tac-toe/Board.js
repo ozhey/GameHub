@@ -8,6 +8,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const [squares, setSquares] = useState([['-', '-', '-'], ['-', '-', '-'], ['-', '-', '-']]);
     const [nextSymbol, setNextSymbol] = useState('X');
     const [winner, setWinner] = useState('-');
+    const [username, setUsername] = useState(Math.random().toString(36).substring(2, 10)); // random name TODO: replace with real username
 
     const onMessage = (payloadString) => {
         if (payloadString.body === "end") {
@@ -15,7 +16,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
             setRoomId("");
             return;
         }
-        
+
         let payload = JSON.parse(payloadString.body);
         let squares = payload.board.map(str => str.split(''));
         setSquares(squares);
@@ -25,6 +26,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     useEffect(() => {
         subRef.current = wsRef.current.subscribe(`/topic/ttt_room/${roomId}`, onMessage)
+        wsRef.current.send(`/app/ttt_room/${roomId}`, {}, JSON.stringify({ command: "registerPlayer", content: username }));
         return () => subRef.current.unsubscribe();
     }, []);
 
@@ -33,7 +35,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
             return;
         }
         wsRef.current.send(`/app/ttt_room/${roomId}`, {}, JSON.stringify({
-            command: "move",
+            command: "makeMove",
             row: i,
             col: j
         }))
@@ -41,7 +43,7 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
 
     const restart = () => {
         wsRef.current.send(`/app/ttt_room/${roomId}`, {}, JSON.stringify({
-            command: "start"
+            command: "startGame"
         }))
     }
 
