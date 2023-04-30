@@ -1,4 +1,4 @@
-package com.gameserver.games_common.models;
+package com.gameserver.gameutils.models;
 
 public class UserSession {
     private String roomId;

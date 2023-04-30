@@ -17,7 +17,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import com.gameserver.games_common.models.UserSession;
+import com.gameserver.gameutils.models.UserSession;
 import com.gameserver.tictactoe.models.Game;
 import com.gameserver.tictactoe.models.WebsocketCommand;
 

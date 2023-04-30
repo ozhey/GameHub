@@ -17,9 +17,10 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import com.gameserver.games_common.models.UserSession;
+import com.gameserver.gameutils.models.UserSession;
 import com.gameserver.snake.models.Game;
 import com.gameserver.snake.models.WebsocketCommand;
+import com.gameserver.snake.persistence.SnakeScoreService;
 
 @Controller
 public class SnakeController {
@@ -31,6 +32,9 @@ public class SnakeController {
   @Autowired
   private SimpMessagingTemplate smp;
 
+  @Autowired
+  private SnakeScoreService snakeScoreService;
+
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
       WebsocketCommand message)
@@ -41,7 +45,7 @@ public class SnakeController {
       case "startGame":
         if (game == null) {
           log("A new game has been created for room " + roomId);
-          game = new Game(smp, players, roomId);
+          game = new Game(smp, players, roomId, snakeScoreService);
           roomIdToGame.put(roomId, game);
         }
         game.resetGame(players);

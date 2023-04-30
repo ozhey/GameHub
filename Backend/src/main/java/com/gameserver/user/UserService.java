@@ -36,4 +36,12 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
+
+    public User getUserByUserName(String username) {
+        Optional<User> userByUsername = userRepository.findByUsername(username);
+        if (userByUsername.isPresent()) {
+            return userByUsername.get();
+        }
+        return null;
+    }
 }

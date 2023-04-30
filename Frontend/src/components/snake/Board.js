@@ -3,7 +3,7 @@ import Scores from "./Scores";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 const MAX_WINDOW_WIDTH = 600; // true maximum width is around 80% of the const value
 
-const Board = ({ wsRef, roomId, setRoomId }) => {
+const Board = ({ wsRef, roomId, setRoomId, username }) => {
     const canvasRef = useRef(null);
     const subRef = useRef(null);
     const [gameState, setGameState] = useState(null);
@@ -11,7 +11,6 @@ const Board = ({ wsRef, roomId, setRoomId }) => {
     const [canvasDimensions, setCanvasDimensions] = useState({ width: 0, height: 0, color: "oldlace", scale: 0 })
     const { height, width } = useWindowDimensions();
     const [userColor, setUserColor] = useState("");
-    const [username, setUsername] = useState(Math.random().toString(36).substring(2, 10)); // random name TODO: replace with real username
     let gameResult;
 
     const getAdjustedCanvas = (baseCanvas) => {

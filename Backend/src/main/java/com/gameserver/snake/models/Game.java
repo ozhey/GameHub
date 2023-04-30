@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import com.gameserver.snake.persistence.SnakeScoreService;
 import com.gameserver.snake.utils.SnakeUtil;
 
 public class Game {
@@ -19,6 +20,7 @@ public class Game {
     private Timer timer = null;
     private String roomId;
     private SimpMessagingTemplate smp;
+    private SnakeScoreService snakeScoreService;
 
     // game state attributes - sent over websocket
     private int time;
@@ -28,7 +30,11 @@ public class Game {
     private int playersCount;
     private String winner;
 
-    public Game(SimpMessagingTemplate smp, ArrayList<String> players, String roomId) {
+    
+
+
+    public Game(SimpMessagingTemplate smp, ArrayList<String> players, String roomId, SnakeScoreService snakeScoreService) {
+        this.snakeScoreService = snakeScoreService;
         this.roomId = roomId;
         this.smp = smp;
         newGame(players);
@@ -62,6 +68,7 @@ public class Game {
     private void gameStep() {
         if (this.winner != null) {
             resetTimer();
+            snakeScoreService.persistGameResult(this.snakes, this.winner);
         }
         Map<String, Snake> newSnakes = new HashMap<>(this.snakes.size());
         boolean shouldCreateApple = false;
