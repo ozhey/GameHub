@@ -7,12 +7,14 @@ import Spinner from "../../components/spinner/Spinner";
 import Snake from '../../components/snake/Snake'
 import TicTacToe from "../../components/tic-tac-toe/TicTacToe";
 import WebsocketStatus from "../../components/websocket/WebsocketStatus";
+import Statistics from "../statistics/Statistics";
 
 const HomePage = ({ username }) => {
     const wsRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [wsError, setWsError] = useState(null);
     const [game, setGame] = useState(null);
+    const [showStats, setShowStats] = useState(null);
 
     useEffect(() => {
         wsRef.current = (getClientAndConnect(setIsConnected, setWsError));
@@ -25,15 +27,17 @@ const HomePage = ({ username }) => {
 
 
     let gameComponent = <section className="gamecards" >
-        <GameCard game={SNAKE} setGame={setGame} />
-        <GameCard game={TIC_TAC_TOE} setGame={setGame} />
+        <GameCard game={SNAKE} setGame={setGame} setShowStats={setShowStats} />
+        <GameCard game={TIC_TAC_TOE} setGame={setGame} setShowStats={setShowStats} />
     </section>;
-    if (game !== null && !isConnected) {
+    if (showStats !== null) {
+        gameComponent = <Statistics setShowStats={setShowStats} username={username} />
+    } else if (game !== null && !isConnected) {
         gameComponent = <Spinner>Connecting...</Spinner>
     } else if (game === SNAKE) {
-        gameComponent = <Snake wsRef={wsRef} username={username}/>
+        gameComponent = <Snake wsRef={wsRef} username={username} />
     } else if (game === TIC_TAC_TOE) {
-        gameComponent = <TicTacToe wsRef={wsRef} username={username}/>
+        gameComponent = <TicTacToe wsRef={wsRef} username={username} />
     }
 
 

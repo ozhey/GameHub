@@ -10,7 +10,7 @@ const Snake = ({ wsRef, username }) => {
         return <Rooms setRoomNum={setRoomId} />
     }
 
-    return <Board wsRef={wsRef} roomId={roomId} setRoomId={setRoomId} username={username}/>
+    return <Board wsRef={wsRef} roomId={roomId} setRoomId={setRoomId} username={username} />
 
 }
 
