@@ -14,24 +14,28 @@ const HomePage = ({ username }) => {
     const [isConnected, setIsConnected] = useState(false);
     const [wsError, setWsError] = useState(null);
     const [game, setGame] = useState(null);
-    const [showStats, setShowStats] = useState(null);
-
+    const [showGameStats, setShowGameStats] = useState(null);
+    
     useEffect(() => {
         wsRef.current = (getClientAndConnect(setIsConnected, setWsError));
         return () => wsRef.current.disconnect();
     }, []);
-
+    
     if (wsError) {
         return <div>Error: {wsError}</div>
     }
-
+    
+    const goBackHome = () => {
+        setGame(null);
+        setShowGameStats(null)
+    }
 
     let gameComponent = <section className="gamecards" >
-        <GameCard game={SNAKE} setGame={setGame} setShowStats={setShowStats} />
-        <GameCard game={TIC_TAC_TOE} setGame={setGame} setShowStats={setShowStats} />
+        <GameCard game={SNAKE} setGame={setGame} setShowStats={setShowGameStats} />
+        <GameCard game={TIC_TAC_TOE} setGame={setGame} setShowStats={setShowGameStats} />
     </section>;
-    if (showStats !== null) {
-        gameComponent = <Statistics setShowStats={setShowStats} username={username} />
+    if (showGameStats !== null) {
+        gameComponent = <Statistics setShowStats={setShowGameStats} showGameStats={showGameStats} username={username} />
     } else if (game !== null && !isConnected) {
         gameComponent = <Spinner>Connecting...</Spinner>
     } else if (game === SNAKE) {
@@ -43,7 +47,7 @@ const HomePage = ({ username }) => {
 
     return (
         <>
-            <h1 className="app__title" onClick={() => setGame("")}>GameHub</h1>
+            <h1 className="app__title" onClick={() => goBackHome()}>GameHub</h1>
             {gameComponent}
             <WebsocketStatus isConnected={isConnected} />
         </>

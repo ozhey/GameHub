@@ -1,10 +1,17 @@
 package com.gameserver.snake.persistence;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SnakeScoreAggregate {
+    @JsonProperty("Username")
     private String username;
+    @JsonProperty("Apples Eaten")
     private int totalApplesEaten;
+    @JsonProperty("Games Played")
     private int totalGamesPlayed;
+    @JsonProperty("Online Games Played")
     private int gamesPlayedWithOthers;
+    @JsonProperty("Online Games Won")
     private int gamesWon;
 
     public SnakeScoreAggregate() {

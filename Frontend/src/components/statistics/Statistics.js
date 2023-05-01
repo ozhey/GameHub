@@ -1,60 +1,70 @@
 import React, { useState } from "react";
 import './Statistics.css';
-import { API_ADDRESS, API_ADDRESS_BASE_PATH } from "../../consts";
+import { API_ADDRESS, API_ADDRESS_BASE_PATH, SNAKE } from "../../consts";
 import useFetch from '../../hooks/useFetch';
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import Spinner from "../spinner/Spinner";
 import './Table.css';
 
-const Statistics = ({ setShowStats, username }) => {
+const Statistics = ({ setShowGameStats, showGameStats, username, game }) => {
     const [isLeaderboard, setIsLeaderboard] = useState(true);
-    const [result, isLoading, error] = useFetch(`${API_ADDRESS}${API_ADDRESS_BASE_PATH}/snake/scores/leaderboard`, null, [], isLeaderboard)
-
-    console.log(result);
+    const path = getPath(showGameStats, isLeaderboard, username);
+    const [result, isLoading, error] = useFetch(`${API_ADDRESS}${API_ADDRESS_BASE_PATH}${path}`, null, [], isLeaderboard)
 
     if (error) {
         return <div>Error: {error.message}</div>;
     } else if (isLoading) {
-        return <div>Loading...</div>;
+        return <Spinner> Loading... </Spinner>;
     }
 
-    let tableBody = <Tbody>
-        {result.map((row, index) => (
-            <Tr key={index}>
-                {Object.values(row).map((col, index) => (
-                    isRegex(col) ? null : <Td key={index}>{col}</Td>
-                ))}
-            </Tr>
-        ))}
-    </Tbody>
+    let tableBody = result.map((row, index) => (
+        <tr key={index}>
+            <td>{index + 1}</td>
+            {Object.values(row).map((col, index) => {
+                if (isRegex(col)) {
+                    return null;
+                } else if (String(col) === 'null') {
+                    col = '-';
+                } else if (String(col) === 'true') {
+                    col = 'Yes';
+                } else if (String(col) === 'false') {
+                    col = 'No';
+                }
+                return <td key={index}>{String(col)}</td>
+            }
+            )}
+        </tr>
+    ))
 
     let tableHeader;
-    if (isLeaderboard) {
-        tableHeader = <Thead>
-            <Tr>
-                <Th>Username</Th>
-                <Th>Apples Eaten</Th>
-                <Th>Games Played</Th>
-                <Th>Online Games Played</Th>
-                <Th>Online Games Won</Th>
-            </Tr>
-        </Thead>
-    } else {
-        tableHeader = <Thead>
-            <Tr>
-                <Th>Apples Eaten</Th>
-                <Th>Online?</Th>
-                <Th>Win?</Th>
-            </Tr>
-        </Thead>
+    if (result.length) {
+        tableHeader = Object.keys(result[0]).map(key => key === 'id' ? null : <th key={key}>{key}</th>);
     }
 
-    return <div>
-        <Table>
-            {tableHeader}
-            {tableBody}
-        </Table>
+    return <div className="stats-container">
+        <button className="stats-button" onClick={() => setIsLeaderboard(prev => !prev)}>
+            {isLeaderboard ? 'Click to view personal game history' : 'Click to view leaderboards'}
+        </button>
+        <div className="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        {tableHeader}
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableBody}
+                </tbody>
+            </table>
+        </div>
     </div>
 
+}
+
+function getPath(game, isLeaderboard, username) {
+    const base = game === SNAKE ? '/snake/scores' : '/tic_tac_toe/scores';
+    const suffix = isLeaderboard ? '/leaderboard' : `?username=${username}`
+    return base + suffix;
 }
 
 function isRegex(str) {

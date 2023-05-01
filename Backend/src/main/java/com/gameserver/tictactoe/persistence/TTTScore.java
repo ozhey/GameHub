@@ -1,4 +1,4 @@
-package com.gameserver.snake.persistence;
+package com.gameserver.tictactoe.persistence;
 
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class SnakeScore {
+public class TTTScore {
     @Id
     @GeneratedValue
     private UUID id;
@@ -24,26 +24,18 @@ public class SnakeScore {
     @JsonIgnore
     private User user;
 
-    @Column(nullable = false)
-    @JsonProperty("Apples Eaten")
-    private int numApplesEaten;
-
-    @Column(nullable = false)
-    @JsonProperty("Played With Others")
-    private boolean playedWithOthers;
-
-    // if the player did not play with others, this will be null
     @JsonProperty("Have Won")
+    @Column(nullable = false)
     private Boolean didWinGame;
 
-    public SnakeScore() {
+    public TTTScore() {
     }
 
-    public SnakeScore(User user, int numApplesEaten, boolean playedWithOthers) {
+    public TTTScore(User user, Boolean didWinGame) {
         this.user = user;
-        this.numApplesEaten = numApplesEaten;
-        this.playedWithOthers = playedWithOthers;
+        this.didWinGame = didWinGame;
     }
+
 
     public UUID getId() {
         return this.id;
@@ -61,26 +53,6 @@ public class SnakeScore {
         this.user = user;
     }
 
-    public int getNumApplesEaten() {
-        return this.numApplesEaten;
-    }
-
-    public void setNumApplesEaten(int numApplesEaten) {
-        this.numApplesEaten = numApplesEaten;
-    }
-
-    public boolean isPlayedWithOthers() {
-        return this.playedWithOthers;
-    }
-
-    public boolean getPlayedWithOthers() {
-        return this.playedWithOthers;
-    }
-
-    public void setPlayedWithOthers(boolean playedWithOthers) {
-        this.playedWithOthers = playedWithOthers;
-    }
-
     public Boolean isDidWinGame() {
         return this.didWinGame;
     }
@@ -92,5 +64,6 @@ public class SnakeScore {
     public void setDidWinGame(Boolean didWinGame) {
         this.didWinGame = didWinGame;
     }
+
 
 }

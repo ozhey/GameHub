@@ -20,6 +20,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 import com.gameserver.gameutils.models.UserSession;
 import com.gameserver.tictactoe.models.Game;
 import com.gameserver.tictactoe.models.WebsocketCommand;
+import com.gameserver.tictactoe.persistence.TTTScoreService;
 
 @Controller
 public class TicTacToeController {
@@ -33,12 +34,15 @@ public class TicTacToeController {
   @Autowired
   private SimpMessagingTemplate smp;
 
+  @Autowired
+  private TTTScoreService tttScoreService;
+
   @MessageMapping("/ttt_room/{roomId}")
   public synchronized void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
       WebsocketCommand message) throws Exception {
     Game game = roomIdToGame.get(roomId);
     if (game == null) {
-      game = new Game(smp, roomId);
+      game = new Game(smp, roomId, tttScoreService);
       this.roomIdToGame.put(roomId, game);
       log("A new game has been created for room " + roomId);
     }

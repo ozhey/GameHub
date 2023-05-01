@@ -1,80 +1,49 @@
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+}
+
 table {
-    background-color: var(--primary-color-1);
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--primary-color-2);
+    border-radius: 8px;
+    border-collapse: collapse;
 }
 
 td,
 th {
-    background-color: var(--primary-color-2);
-    padding: .75rem;
+    padding: 12px;
     text-align: center;
+}
+
+tr {
+    border-bottom: 1px solid rgb(0, 0, 0, 0.08);
+}
+
+thead {
+    background-color: var(--primary-color-4);
+    border-radius: 10px;
+    border-bottom: 2px solid rgb(0, 0, 0, 0.08);
 }
 
 th {
     font-weight: 700;
-    background-color: var(--accent-color-1);
 }
 
-
-.responsiveTable {
-    width: 100%;
+table thead tr th:first-child {
+    border-radius: 8px 0px 0px 0px;
 }
 
-.responsiveTable td .tdBefore {
-    display: none;
+table thead tr th:last-child {
+    border-radius: 0px 8px 0px 0px;
 }
 
-@media screen and (max-width: 40em) {
-    /*
-      Force table elements to not behave like tables anymore
-      Hide table headers (but not display: none;, for accessibility)
-    */
-
-    td,
-    th {
-        background-color: var(--primary-color-3);
-    }
-
-    .responsiveTable table,
-    .responsiveTable thead,
-    .responsiveTable tbody,
-    .responsiveTable th,
-    .responsiveTable td,
-    .responsiveTable tr {
-        display: block;
-    }
-
-    .responsiveTable thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-        border-bottom: 2px solid #333;
-    }
-
-    .responsiveTable tbody tr {
-        padding: .25em;
-    }
-
-    .responsiveTable td.pivoted {
-        /* Behave like a "row" */
-        border: none !important;
-        position: relative;
-        padding-left: calc(70% + 10px) !important;
-        text-align: left !important;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-    }
-
-    .responsiveTable td .tdBefore {
-        /* Now like a table header */
-        position: absolute;
-        display: block;
-
-        /* Top/left values mimic padding */
-        left: 1rem;
-        width: calc(70% - 20px);
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-        text-align: left !important;
-        font-weight: 600;
+@media screen and (max-width: 600px) {
+    table {
+        font-size: 14px;
+        overflow-x: scroll;
+        /* enable horizontal scrolling on small screens */
     }
 }

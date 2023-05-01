@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import com.gameserver.tictactoe.persistence.TTTScoreService;
+
 public class Game {
 
     // internal attributes - not sent over websocket
     private SimpMessagingTemplate smp;
     private String roomId;
+    private TTTScoreService tttScoreService;
 
     // game state attributes - sent over websocket
     private char[][] board;
@@ -17,9 +20,10 @@ public class Game {
     private char winner;
     private Map<Character, String> players;
 
-    public Game(SimpMessagingTemplate smp, String roomId) {
+    public Game(SimpMessagingTemplate smp, String roomId, TTTScoreService tttScoreService) {
         this.smp = smp;
         this.roomId = roomId;
+        this.tttScoreService = tttScoreService;
         this.players = new HashMap<>();
         newGame();
     }
@@ -41,6 +45,9 @@ public class Game {
         board[row][col] = this.nextSymbol;
         this.nextSymbol = this.nextSymbol == 'X' ? 'O' : 'X';
         this.winner = calcWinner();
+        if (this.winner != '-') {
+            tttScoreService.persistGameResult(this.winner, this.players);
+        }
         this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
     }
 
