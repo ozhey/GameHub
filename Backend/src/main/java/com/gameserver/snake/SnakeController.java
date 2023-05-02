@@ -61,7 +61,10 @@ public class SnakeController {
       case "registerPlayer":
         String username = message.getContent();
         sessionIdToUserSession.put(sessionId, new UserSession(roomId, username));
-        players.add(username);
+        // prevent players from playing with themselves
+        if (!players.contains(username)) {
+          players.add(username);
+        }
         playersByRoom.put(roomId, players);
         log("room " + roomId + " has " + players.size() + " players");
         break;
