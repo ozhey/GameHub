@@ -7,7 +7,7 @@ const GameCard = ({ game, setGame, setShowStats }) => {
         <article className="gamecard" onClick={() => setGame(game)}>
             <img className="gamecard__img" src={require(`../../images/${game}.png`)}></img>
             <h2 className="gamecard__title">Play {game}</h2>
-            <div onClick={() => setShowStats(game)}>View game statistics</div>
+            <div className="gamecard__stats" onClick={() => setShowStats(game)}>View game statistics</div>
         </article>
     )
 }

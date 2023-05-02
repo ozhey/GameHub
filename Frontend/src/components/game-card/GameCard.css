@@ -1,7 +1,7 @@
 .gamecards {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+
     justify-content: center;
     padding: 20px;
     gap: 20px;
@@ -13,6 +13,33 @@
     width: 300px;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease-out;
+    height: 351px;
+}
+
+.gamecard:hover .gamecard__stats {
+    opacity: 1;
+    transform: translateY(0);
+    position: static;
+}
+
+.gamecard:hover {
+    height: 391px;
+}
+
+.gamecard__stats {
+    margin: 16px 0px 6px;
+    padding: 5px;
+    border-radius: 7px;
+    background-color: var(--primary-color-2);
+    transition: opacity 0.3s ease-in, transform 0.2s ease-in;
+    transform: translateY(50%);
+    position: sticky;
+    opacity: 0;
+}
+
+.gamecard__stats:hover {
+    background-color: var(--primary-color-3);
 }
 
 .gamecard__img {
@@ -23,12 +50,28 @@
     margin: 15px 0px 5px;
 }
 
+
 @media only screen and (max-width: 780px) {
-	.gamecard {
+    .gamecard {
         width: 200px;
+        height: unset;
     }
 
     .gamecard__img {
         width: 200px;
+    }
+
+    .gamecard:hover .gamecard__stats {
+        position:unset;
+    }
+    
+    .gamecard:hover {
+        height: 391px;
+    }
+    
+    .gamecard__stats {
+        transform: translateY(0);
+        position: unset;
+        opacity: 1;
     }
 }

@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { API_ADDRESS } from '../../consts';
 
 const getClientAndConnect = (setIsConnected, setError) => {
+    console.log("connecting");
     let Sock = new SockJS(`${API_ADDRESS}/ws`);
     let stompClient = over(Sock);
     stompClient.connect({}, () => setIsConnected(true), (err) => setError(String(err)));

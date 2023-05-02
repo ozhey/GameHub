@@ -49,7 +49,7 @@ const HomePage = ({ username }) => {
         <>
             <h1 className="app__title" onClick={() => goBackHome()}>GameHub</h1>
             {gameComponent}
-            <WebsocketStatus isConnected={isConnected} />
+            <WebsocketStatus isConnected={isConnected} wsRef={wsRef} setIsConnected={setIsConnected} setWsError={setWsError}/>
         </>
     );
 }
