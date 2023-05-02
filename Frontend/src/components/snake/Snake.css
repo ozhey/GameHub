@@ -54,6 +54,10 @@
 	background-color: var(--primary-color-2);
 }
 
+.snake-button:disabled {
+    cursor: not-allowed;
+  }
+
 .rooms {
 	display: flex;
 	flex-direction: column;

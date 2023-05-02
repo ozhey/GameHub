@@ -64,13 +64,22 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
         status = <div className="status">{winnerName} won!</div>
     }
 
+    if (winner !== '-') {
+        console.log("disabled");
+    }
+
     return (
         <div className="game">
             <div className="game-board">
                 {status}
                 <Squares squares={squares} onPlay={onPlay} />
                 <div className="game-info">
-                    <button onClick={() => restart()}>Restart</button>
+                    <button
+                        disabled={winner === '-' ? true : false}
+                        title={winner === '-' ? "The game has to end before a new one can be started" : null}
+                        onClick={() => restart()}>
+                        New Game
+                    </button>
                 </div>
             </div>
         </div>

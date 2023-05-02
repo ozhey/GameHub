@@ -74,3 +74,8 @@
 .game-info button:hover {
     background-color: var(--accent-color-2)
 }
+
+.game-info button:disabled {
+    background-color: var(--primary-color-5);
+    cursor: not-allowed;
+  }

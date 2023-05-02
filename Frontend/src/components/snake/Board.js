@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Scores from "./Scores";
+import { useSwipeable } from "react-swipeable";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 const MAX_WINDOW_WIDTH = 600; // true maximum width is around 80% of the const value
 
@@ -12,6 +13,13 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
     const { height, width } = useWindowDimensions();
     const [userColor, setUserColor] = useState("");
     let gameResult;
+
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => handleKeyDown({ code: "ArrowLeft" }),
+        onSwipedRight: () => handleKeyDown({ code: "ArrowRight" }),
+        onSwipedUp: () => handleKeyDown({ code: "ArrowUp" }),
+        onSwipedDown: () => handleKeyDown({ code: "ArrowDown" })
+    });
 
     const getAdjustedCanvas = (baseCanvas) => {
         const requiredWidth = Math.min(width, MAX_WINDOW_WIDTH) * 0.8;
@@ -44,8 +52,8 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
     }, [canvasDimensions, width, height])
 
     const handleKeyDown = (e) => {
-        if (e.preventDefault && (e.code === 'ArrowUp' || e.code === 'ArrowDown' || e.code === 'ArrowLeft' || e.code === 'ArrowRight')) {
-            e.preventDefault();
+        if (e.code === 'ArrowUp' || e.code === 'ArrowDown' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+            if (e.preventDefault) e.preventDefault();
             wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "changeDir", content: e.code }));
         }
     }
@@ -58,7 +66,6 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
     }, [canvas],);
 
     useEffect(() => {
-        console.log("snake mount");
         subRef.current = wsRef.current.subscribe(`/topic/snake_room/${roomId}`, onMessage);
         wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "registerPlayer", content: username }));
         return () => subRef.current.unsubscribe();
@@ -104,7 +111,7 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
 
     return (
         <div className='snake-game'>
-            <div role="button" tabIndex="0" onKeyDown={handleKeyDown} className='snake-container'>
+            <div role="button" tabIndex="0" onKeyDown={handleKeyDown}{...swipeHandlers} className='snake-container'>
                 {userColorElement}
                 <canvas style={{ display: 'block' }}
                     className='snake-canvas'
@@ -114,8 +121,11 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
                 />
                 <div className='options'>
                     <button
+                        disabled={(gameState && gameState.time !== 0) ? true : false}
+                        title={(gameState && gameState.time !== 0) ? "The game has to end before a new one can be started" : null}
                         onClick={() => wsRef.current.send(`/app/snake_room/${roomId}`, {}, JSON.stringify({ type: "startGame" }))}
-                        className='snake-button'>Start game
+                        className='snake-button'>
+                        New Game
                     </button>
                     <button
                         onClick={() => setRoomId("")} // go back to rooms page
