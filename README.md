@@ -2,6 +2,7 @@
 The project is a website that showcases two classic online games, Snake and Tic Tac Toe.  
 It uses Java Spring Boot as the backend, React as the frontend, and PostgreSQL as the database.
 
+<img src="./img/App.png" alt="Snake" width="500"/>
 
 ## Local Development
 
