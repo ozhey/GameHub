@@ -6,18 +6,18 @@ public class SnakeScoreAggregate {
     @JsonProperty("Username")
     private String username;
     @JsonProperty("Apples Eaten")
-    private int totalApplesEaten;
+    private Long totalApplesEaten;
     @JsonProperty("Games Played")
-    private int totalGamesPlayed;
+    private Long totalGamesPlayed;
     @JsonProperty("Online Games Played")
-    private int gamesPlayedWithOthers;
+    private Long gamesPlayedWithOthers;
     @JsonProperty("Online Games Won")
-    private int gamesWon;
+    private Long gamesWon;
 
     public SnakeScoreAggregate() {
     }
 
-    public SnakeScoreAggregate(String username, int totalApplesEaten, int totalGamesPlayed, int gamesPlayedWithOthers, int gamesWon) {
+    public SnakeScoreAggregate(String username, Long totalApplesEaten, Long totalGamesPlayed, Long gamesPlayedWithOthers, Long gamesWon) {
         this.username = username;
         this.totalApplesEaten = totalApplesEaten;
         this.totalGamesPlayed = totalGamesPlayed;
@@ -34,35 +34,35 @@ public class SnakeScoreAggregate {
         this.username = username;
     }
 
-    public int getTotalApplesEaten() {
+    public Long getTotalApplesEaten() {
         return this.totalApplesEaten;
     }
 
-    public void setTotalApplesEaten(int totalApplesEaten) {
+    public void setTotalApplesEaten(Long totalApplesEaten) {
         this.totalApplesEaten = totalApplesEaten;
     }
 
-    public int getTotalGamesPlayed() {
+    public Long getTotalGamesPlayed() {
         return this.totalGamesPlayed;
     }
 
-    public void setTotalGamesPlayed(int totalGamesPlayed) {
+    public void setTotalGamesPlayed(Long totalGamesPlayed) {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
-    public int getGamesPlayedWithOthers() {
+    public Long getGamesPlayedWithOthers() {
         return this.gamesPlayedWithOthers;
     }
 
-    public void setGamesPlayedWithOthers(int gamesPlayedWithOthers) {
+    public void setGamesPlayedWithOthers(Long gamesPlayedWithOthers) {
         this.gamesPlayedWithOthers = gamesPlayedWithOthers;
     }
 
-    public int getGamesWon() {
+    public Long getGamesWon() {
         return this.gamesWon;
     }
 
-    public void setGamesWon(int gamesWon) {
+    public void setGamesWon(Long gamesWon) {
         this.gamesWon = gamesWon;
     }
     

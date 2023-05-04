@@ -26,18 +26,7 @@ public class SnakeScoreService {
     }
 
     public List<SnakeScoreAggregate> getLeaderboard() {
-        List<Object[]> rows = snakeScoreRepository.getLeaderboard();
-        List<SnakeScoreAggregate> leaderboard = new ArrayList<>();
-        for (Object[] row : rows) {
-            String username = (String) row[0];
-            int totalApplesEaten = ((Long)row[1]).intValue();
-            int totalGamesPlayed = ((Long)row[2]).intValue();
-            int gamesPlayedWithOthers = ((Long)row[3]).intValue();
-            int gamesWon = ((Long)row[4]).intValue();
-            SnakeScoreAggregate aggregatedSnakeScore = new SnakeScoreAggregate(username, totalApplesEaten, totalGamesPlayed, gamesPlayedWithOthers, gamesWon);
-            leaderboard.add(aggregatedSnakeScore);
-        }
-        return leaderboard;
+        return snakeScoreRepository.getLeaderboard();
     }
     public void persistGameResult(Map<String, Snake> snakes, String winner) {
         List<SnakeScore> snakeScores = new ArrayList<>();

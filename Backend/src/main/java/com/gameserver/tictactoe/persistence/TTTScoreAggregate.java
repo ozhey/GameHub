@@ -6,14 +6,14 @@ public class TTTScoreAggregate {
     @JsonProperty("Username")
     private String username;
     @JsonProperty("Games Played")
-    private int totalGamesPlayed;
+    private Long totalGamesPlayed;
     @JsonProperty("Games Won")
-    private int gamesWon;
+    private Long gamesWon;
 
     public TTTScoreAggregate() {
     }
 
-    public TTTScoreAggregate(String username, int totalGamesPlayed, int gamesWon) {
+    public TTTScoreAggregate(String username, Long totalGamesPlayed, Long gamesWon) {
         this.username = username;
         this.totalGamesPlayed = totalGamesPlayed;
         this.gamesWon = gamesWon;
@@ -27,19 +27,19 @@ public class TTTScoreAggregate {
         this.username = username;
     }
 
-    public int getTotalGamesPlayed() {
+    public Long getTotalGamesPlayed() {
         return this.totalGamesPlayed;
     }
 
-    public void setTotalGamesPlayed(int totalGamesPlayed) {
+    public void setTotalGamesPlayed(Long totalGamesPlayed) {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
-    public int getGamesWon() {
+    public Long getGamesWon() {
         return this.gamesWon;
     }
 
-    public void setGamesWon(int gamesWon) {
+    public void setGamesWon(Long gamesWon) {
         this.gamesWon = gamesWon;
     }
 

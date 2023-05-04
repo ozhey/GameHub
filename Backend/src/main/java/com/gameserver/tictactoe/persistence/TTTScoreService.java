@@ -24,16 +24,7 @@ public class TTTScoreService {
     }
 
     public List<TTTScoreAggregate> getLeaderboard() {
-        List<Object[]> rows = tttScoreRepository.getLeaderboard();
-        List<TTTScoreAggregate> leaderboard = new ArrayList<>();
-        for (Object[] row : rows) {
-            String username = (String) row[0];
-            int totalGamesPlayed = ((Long) row[1]).intValue();
-            int gamesWon = ((Long) row[2]).intValue();
-            TTTScoreAggregate aggregatedTttScore = new TTTScoreAggregate(username, totalGamesPlayed, gamesWon);
-            leaderboard.add(aggregatedTttScore);
-        }
-        return leaderboard;
+        return tttScoreRepository.getLeaderboard();
     }
 
     public void persistGameResult(char winner, Map<Character, String> players) {

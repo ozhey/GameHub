@@ -12,8 +12,8 @@ import com.gameserver.user.User;
 @Repository
 public interface SnakeScoreRepository extends JpaRepository<SnakeScore, Long> {
 
-    @Query("SELECT u.username, SUM(s.numApplesEaten) AS totalApplesEaten, COUNT(s) AS totalGamesPlayed, SUM(CASE WHEN s.playedWithOthers THEN 1 ELSE 0 END) AS gamesPlayedWithOthers, SUM(CASE WHEN s.didWinGame THEN 1 ELSE 0 END) AS gamesWon FROM SnakeScore s JOIN s.user u GROUP BY u.username ORDER BY totalApplesEaten DESC")
-    List<Object[]> getLeaderboard();
+    @Query("SELECT new com.gameserver.snake.persistence.SnakeScoreAggregate(u.username, SUM(s.numApplesEaten) AS totalApplesEaten, COUNT(s) AS totalGamesPlayed, SUM(CASE WHEN s.playedWithOthers THEN 1 ELSE 0 END) AS gamesPlayedWithOthers, SUM(CASE WHEN s.didWinGame THEN 1 ELSE 0 END) AS gamesWon) FROM SnakeScore s JOIN s.user u GROUP BY u.username ORDER BY totalApplesEaten DESC")
+    List<SnakeScoreAggregate> getLeaderboard();
 
     @Query("SELECT s FROM SnakeScore s JOIN s.user u WHERE u = :user")
     List<SnakeScore> findByUser(@Param("user") User user);
