@@ -10,26 +10,27 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
     const [winner, setWinner] = useState('-');
     const [players, setPlayers] = useState({});
 
-    const onMessage = (payloadString) => {
-        if (payloadString.body === "end") {
-            console.log("The opponet has left the match. Returning to the waiting room.")
-            setRoomId("");
-            return;
-        }
-
-        let payload = JSON.parse(payloadString.body);
-        let squares = payload.board.map(str => str.split(''));
-        setPlayers(payload.players);
-        setSquares(squares);
-        setNextSymbol(payload.nextSymbol);
-        setWinner(payload.winner);
-    }
 
     useEffect(() => {
+        const onMessage = (payloadString) => {
+            if (payloadString.body === "end") {
+                console.log("The opponet has left the match. Returning to the waiting room.")
+                setRoomId("");
+                return;
+            }
+
+            let payload = JSON.parse(payloadString.body);
+            let squares = payload.board.map(str => str.split(''));
+            setPlayers(payload.players);
+            setSquares(squares);
+            setNextSymbol(payload.nextSymbol);
+            setWinner(payload.winner);
+        }
+
         subRef.current = wsRef.current.subscribe(`/topic/ttt_room/${roomId}`, onMessage)
         wsRef.current.send(`/app/ttt_room/${roomId}`, {}, JSON.stringify({ command: "registerPlayer", content: username }));
         return () => subRef.current.unsubscribe();
-    }, []);
+    }, [roomId, setRoomId, username, wsRef]);
 
     const onPlay = (i, j) => {
         if (squares[i][j] !== '-' || winner !== '-') {

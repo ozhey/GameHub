@@ -5,14 +5,15 @@ import './TicTacToe.css';
 const WaitingRoom = ({ wsRef, setRoomId }) => {
     const waitingRoomSub = useRef(null);
 
-    const onRoomFound = (roomId) => {
-        setRoomId(roomId.body);
-    }
 
     useEffect(() => {
+        const onRoomFound = (roomId) => {
+            setRoomId(roomId.body);
+        }
+
         waitingRoomSub.current = wsRef.current.subscribe("/topic/ttt/waiting_room", onRoomFound)
         return () => waitingRoomSub.current.unsubscribe();
-    }, []);
+    }, [setRoomId, wsRef]);
 
     return <Spinner> Searching for a match... </Spinner>
 

@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import './App.css';
 import LoginForm from "./components/login/Login";
 import HomePage from "./components/home/HomePage";
+import Bg from "./images/bg.jpg"
 
 function App() {
   const [username, setUsername] = useState("");
@@ -13,9 +14,15 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App" style={{
+      backgroundImage: "url(" + Bg + ")",
+      opacity: "1",
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat'
+    }}>
       {component}
-    </div>
+    </div >
   );
 }
 

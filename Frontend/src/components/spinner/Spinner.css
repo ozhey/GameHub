@@ -8,21 +8,23 @@
 }
 
 .spinner {
-  border: 10px solid rgba(0, 0, 0, 0.3);
-  border-top-color: rgba(0, 0, 0, 0.6);
+  border: 15px solid rgba(255, 239, 213, 0.5);
+  border-top-color: rgba(255, 239, 213, 0.8);
   border-radius: 50%;
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   margin: 10px;
   animation: spin 1s linear infinite;
 }
 
 .spinner-text {
     position: absolute;
+    font-weight: 600;
+    color: rgb(255, 239, 213);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 100px;
+    max-width: 120px;
   }
   
 
