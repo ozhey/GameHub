@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import './Statistics.css';
-import { API_ADDRESS, API_ADDRESS_BASE_PATH, SNAKE } from "../../consts";
+import { SNAKE } from "../../consts";
 import useFetch from '../../hooks/useFetch';
 import Spinner from "../spinner/Spinner";
+import {getStatisticsGetUrl} from '../../api/statistics/Statistics';
 import './Table.css';
 
 const Statistics = ({ setShowGameStats, showGameStats, username, game }) => {
     const [isLeaderboard, setIsLeaderboard] = useState(true);
-    const path = getPath(showGameStats, isLeaderboard, username);
-    const [result, isLoading, error] = useFetch(`${API_ADDRESS}${API_ADDRESS_BASE_PATH}${path}`, null, [], isLeaderboard)
+    const [result, isLoading, error] = useFetch(getStatisticsGetUrl(showGameStats, isLeaderboard, username), null, [], isLeaderboard)
 
     if (error) {
         return <div>Error: {error.message}</div>;
