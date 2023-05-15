@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import './Statistics.css';
-import { SNAKE } from "../../consts";
 import useFetch from '../../hooks/useFetch';
 import Spinner from "../spinner/Spinner";
 import {getStatisticsGetUrl} from '../../api/statistics/Statistics';
@@ -59,12 +58,6 @@ const Statistics = ({ setShowGameStats, showGameStats, username, game }) => {
         </div>
     </div>
 
-}
-
-function getPath(game, isLeaderboard, username) {
-    const base = game === SNAKE ? '/snake/scores' : '/tic_tac_toe/scores';
-    const suffix = isLeaderboard ? '/leaderboard' : `?username=${username}`
-    return base + suffix;
 }
 
 function isRegex(str) {
