@@ -23,13 +23,7 @@ The project might run with earlier versions but it is not guaranteed.
 2. Set up the database:  
     * Create a new PostgreSQL database  
       ```sh
-      docker run
-        --name gamehub
-        -p 5433:5432 
-        -e POSTGRES_USER=admin 
-        -e POSTGRES_PASSWORD=admin 
-        -e POSTGRES_DB=gamehub
-        -d postgres
+      docker run --name gamehub -p 5433:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=gamehub -d postgres
       ```
     * In case you chose to create the database in a different way, you might need to update the database credentials in the application.properties file under src/main/resources.  
 3. Start the backend server:  
