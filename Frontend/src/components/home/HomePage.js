@@ -35,7 +35,7 @@ const HomePage = ({ username }) => {
         <GameCard game={TIC_TAC_TOE} setGame={setGame} setShowStats={setShowGameStats} />
     </section>;
     if (showGameStats !== null) {
-        gameComponent = <Statistics setShowStats={setShowGameStats} showGameStats={showGameStats} username={username} />
+        gameComponent = <Statistics showGameStats={showGameStats} username={username} />
     } else if (game !== null && !isConnected) {
         gameComponent = <Spinner>Connecting...</Spinner>
     } else if (game === SNAKE) {

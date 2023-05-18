@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import './Statistics.css';
 import useFetch from '../../hooks/useFetch';
 import Spinner from "../spinner/Spinner";
-import {getStatisticsGetUrl} from '../../api/statistics/Statistics';
+import { getStatisticsGetUrl } from '../../api/statistics/Statistics';
 import './Table.css';
 
-const Statistics = ({ setShowGameStats, showGameStats, username, game }) => {
+const Statistics = ({ showGameStats, username, game }) => {
     const [isLeaderboard, setIsLeaderboard] = useState(true);
     const [result, isLoading, error] = useFetch(getStatisticsGetUrl(showGameStats, isLeaderboard, username), null, [], isLeaderboard)
 
