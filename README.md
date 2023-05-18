@@ -16,7 +16,7 @@ The project might run with earlier versions but it is not guaranteed.
 
 ### Installation
 
-1. Clone this repository to your local machine  
+1. If you don't already have the source files locally, clone the repository to your local machine  
     ```sh
     git clone https://github.com/ozhey/GameHub.git
     ```
@@ -25,7 +25,7 @@ The project might run with earlier versions but it is not guaranteed.
       ```sh
       docker run --name gamehub -p 5433:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=gamehub -d postgres
       ```
-    * In case you chose to create the database in a different way, you might need to update the database credentials in the application.properties file under src/main/resources.  
+    * If you prefer to create the database in a different way (e.g not using docker), you might need to update the database credentials in the application.properties file under src/main/resources.  
 3. Start the backend server:  
     * Navigate to the backend directory and run `mvn clean package`. This will compile your code and create a JAR file containing your Spring application and its dependencies in the target directory.
     * Run the JAR file using the java command  
