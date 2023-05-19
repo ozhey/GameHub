@@ -22,6 +22,9 @@ import com.gameserver.tictactoe.models.Game;
 import com.gameserver.tictactoe.models.WebsocketCommand;
 import com.gameserver.tictactoe.persistence.TTTScoreService;
 
+/**
+ * Controller class for TicTacToe game.
+ */
 @Controller
 public class TicTacToeController {
 
@@ -37,6 +40,15 @@ public class TicTacToeController {
   @Autowired
   private TTTScoreService tttScoreService;
 
+  /**
+   * Handles WebSocket commands for TicTacToe game.
+   * 
+   * @param roomId    The ID of the game room.
+   * @param sessionId The WebSocket session ID.
+   * @param message   The WebSocket command message. The available command types
+   *                  are "registerPlayer", "startGame", "makeMove".
+   * @throws Exception if an error occurs during command processing.
+   */
   @MessageMapping("/ttt_room/{roomId}")
   public synchronized void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
       WebsocketCommand message) throws Exception {
@@ -64,6 +76,11 @@ public class TicTacToeController {
     }
   }
 
+  /**
+   * Handles the session subscribe event.
+   * 
+   * @param event The session subscribe event.
+   */
   @EventListener
   public synchronized void handleSessionSubscribe(SessionSubscribeEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -84,16 +101,35 @@ public class TicTacToeController {
 
   }
 
+  /**
+   * Handles the session unsubscribe event.
+   * 
+   * @param event The session unsubscribe event.
+   */
   @EventListener
   public void handleSessionUnsubscribe(SessionUnsubscribeEvent event) {
     handleLeaveGame(event);
   }
 
+  /**
+   * Handles the session disconnect event.
+   * 
+   * @param event The session disconnect event.
+   */
   @EventListener
   public void handleSessionDisconnect(SessionDisconnectEvent event) {
     handleLeaveGame(event);
   }
 
+  /**
+   * Handles the event when a user leaves the game.
+   * If the user was in a waiting room, it will empty the waiting room.
+   * If the user left an active game, it will delete the game and notify the other
+   * player (if one exists).
+   *
+   * @param event The AbstractSubProtocolEvent representing the event of the user
+   *              leaving the game.
+   */
   private synchronized void handleLeaveGame(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
@@ -126,10 +162,23 @@ public class TicTacToeController {
 
   }
 
+  /**
+   * Generates a unique room ID.
+   *
+   * @return A String representing the generated room ID.
+   */
   private String generateRoomId() {
     return UUID.randomUUID().toString().substring(0, ROOM_ID_LENGTH);
   }
 
+  /**
+   * Handles the event when a user joins the waiting room.
+   * If someone already waits in the waiting room, it it creates a new room UUID
+   * and sends it to both clients.
+   *
+   * @param headerAccessor The StompHeaderAccessor containing the header
+   *                       information of the event.
+   */
   private void handleJoinWaitingRoom(StompHeaderAccessor headerAccessor) {
     String sessId = headerAccessor.getSessionId();
     if (this.waitingUserSessId.equals("")) {
@@ -138,8 +187,8 @@ public class TicTacToeController {
       return;
     }
 
-    // a short wait to let the client establish the connection, otherwise the
-    // message might drop
+    // a short wait to let the new client establish the connection, otherwise the
+    // message for some reason sometimes drops
     try {
       wait(1);
     } catch (InterruptedException e) {
@@ -152,6 +201,15 @@ public class TicTacToeController {
     this.waitingUserSessId = "";
   }
 
+  /**
+   * Creates a user session for the specified user and registers him to the
+   * specified game.
+   *
+   * @param sessId   The session ID of the player.
+   * @param roomId   The room ID of the game.
+   * @param username The username of the player.
+   * @param game     The Game instance in which the player is registered.
+   */
   private void handleRegisterPlayer(String sessId, String roomId, String username, Game game) {
     UserSession userSession = this.sessIdToUserSession.get(sessId);
     userSession.setPlayerId(username);

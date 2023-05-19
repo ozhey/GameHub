@@ -11,6 +11,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import com.gameserver.snake.persistence.SnakeScoreService;
 import com.gameserver.snake.utils.SnakeUtil;
 
+/**
+ * The Game class represents a game instance. It manages the game state,
+ * including the players, snakes, apple, canvas, and
+ * other attributes. The game logic is executed in steps, and the state changes
+ * are communicated over a WebSocket.
+ */
 public class Game {
 
     // internal attributes - not sent over websocket
@@ -30,16 +36,28 @@ public class Game {
     private int playersCount;
     private String winner;
 
-    
-
-
-    public Game(SimpMessagingTemplate smp, ArrayList<String> players, String roomId, SnakeScoreService snakeScoreService) {
+    /**
+     * Constructs a new Game instance.
+     * 
+     * @param smp               the SimpMessagingTemplate for sending messages over
+     *                          WebSocket
+     * @param players           the list of player names
+     * @param roomId            the unique identifier of the game room
+     * @param snakeScoreService the service for managing snake scores
+     */
+    public Game(SimpMessagingTemplate smp, ArrayList<String> players, String roomId,
+            SnakeScoreService snakeScoreService) {
         this.snakeScoreService = snakeScoreService;
         this.roomId = roomId;
         this.smp = smp;
         newGame(players);
     }
 
+    /**
+     * Initializes a new game with the specified players.
+     * 
+     * @param players the list of player names
+     */
     private void newGame(ArrayList<String> players) {
         this.playersCount = players.size();
         this.canvas = new Canvas(playersCount);
@@ -52,11 +70,22 @@ public class Game {
         this.apple = new Apple(snakes, canvas);
     }
 
+    /**
+     * Resets the game with the specified players.
+     * 
+     * @param players the list of player names
+     */
     public void resetGame(ArrayList<String> players) {
         resetTimer();
         newGame(players);
     }
 
+    /**
+     * Starts the game with the specified players.
+     * This method will start a timer that ticks every 30ms the gamestep function.
+     * 
+     * @param players the list of player names
+     */
     public void start(ArrayList<String> players) {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -65,6 +94,9 @@ public class Game {
         }, 600L, 30L);
     }
 
+    /**
+     * Performs a single step of the game logic.
+     */
     private void gameStep() {
         if (this.winner != null) {
             resetTimer();
@@ -117,6 +149,9 @@ public class Game {
         this.smp.convertAndSend("/topic/snake_room/" + roomId, this);
     }
 
+    /**
+     * Resets the game timer.
+     */
     public void resetTimer() {
         if (this.timer != null) {
             this.timer.cancel();
@@ -124,10 +159,21 @@ public class Game {
         this.timer = new Timer();
     }
 
+    /**
+     * Changes the direction of the snake for the specified player.
+     * 
+     * @param playerId the ID of the player controlling the snake
+     * @param dir      the new direction for the snake
+     */
     public void changeSnakeDir(String playerId, String dir) {
         this.snakes.get(playerId).changeDir(dir);
     }
 
+    /**
+     * Retrieves a map that maps each snake's player ID to its color.
+     * 
+     * @return a map of player ID to color
+     */
     public Map<String, String> FetchSnakePlayerIdToColor() {
         Map<String, String> playerIdToColor = new HashMap<>(this.snakes.size());
         for (Map.Entry<String, Snake> snakeEntry : this.snakes.entrySet()) {

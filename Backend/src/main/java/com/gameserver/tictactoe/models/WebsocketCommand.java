@@ -1,11 +1,24 @@
 package com.gameserver.tictactoe.models;
 
+/**
+ * Represents a WebSocket command for the Tic Tac Toe game.
+ * It is the only command structure that clients can use for this game.
+ */
 public class WebsocketCommand {
     private String command;
     private String content;
     private int row;
     private int col;
 
+    /**
+     * Constructs a WebsocketCommand object with the specified command, content,
+     * row, and column.
+     *
+     * @param command The command associated with the WebSocket message.
+     * @param content The content of the WebSocket message.
+     * @param row     The row index associated with the command.
+     * @param col     The column index associated with the command.
+     */
     public WebsocketCommand(String command, String content, int row, int col) {
         this.command = command;
         this.content = content;

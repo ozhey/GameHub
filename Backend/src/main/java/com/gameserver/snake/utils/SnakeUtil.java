@@ -6,6 +6,9 @@ import com.gameserver.snake.models.Canvas;
 import com.gameserver.snake.models.Point;
 import com.gameserver.snake.models.Snake;
 
+/**
+ * This class provides utility methods for the Snake game.
+ */
 public final class SnakeUtil {
 
     /**
@@ -15,6 +18,13 @@ public final class SnakeUtil {
         throw new IllegalStateException("Utility class");
     }
 
+    /**
+     * Checks if any snakes have collided with each other. If so, the snakes are
+     * killed.
+     * 
+     * @param snakes The map of snakes.
+     * @return True if any snakes collided, false otherwise.
+     */
     public static boolean checkSnakesHeadCollisionAndKill(Map<String, Snake> snakes) {
         boolean didSnakeDie = false;
         for (Snake snk : snakes.values()) {
@@ -31,6 +41,13 @@ public final class SnakeUtil {
         return didSnakeDie;
     }
 
+    /**
+     * Gets the winner of the game, if any. If all snakes are dead, the winner is
+     * the snake with the highest score.
+     * 
+     * @param snakes The map of snakes.
+     * @return The winner of the game, or null if there is no winner.
+     */
     public static String getWinnerIfAllDead(Map<String, Snake> snakes) {
         int maxScore = 0;
         boolean allDead = true;
@@ -55,6 +72,15 @@ public final class SnakeUtil {
         return null;
     }
 
+    /**
+     * Creates a new head for the snake, based on the current head, direction, and
+     * canvas.
+     * 
+     * @param currentHead The current head of the snake.
+     * @param dir         The direction of the snake.
+     * @param canvas      The canvas on which the snake is drawn.
+     * @return The new head of the snake.
+     */
     public static Point createNewSnakeHead(Point currentHead, Point dir, Canvas canvas) {
         Point newHead = new Point(currentHead.getX() + dir.getX(), currentHead.getY() + dir.getY());
 

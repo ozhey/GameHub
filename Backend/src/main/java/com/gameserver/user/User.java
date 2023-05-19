@@ -4,6 +4,9 @@ import java.util.UUID;
 
 import jakarta.persistence.*;
 
+/**
+ * Entity class representing a user.
+ */
 @Entity
 @Table(name = "user_table") // table 'user' is not allowed in postgresql
 public class User {
@@ -18,9 +21,19 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    /**
+     * Constructs an empty User object.
+     */
     public User() {
     }
 
+    /**
+     * Constructs a User object with the specified id, username, and password.
+     *
+     * @param id       The ID of the user.
+     * @param username The username of the user.
+     * @param password The password of the user.
+     */
     public User(UUID id, String username, String password) {
         this.id = id;
         this.username = username;

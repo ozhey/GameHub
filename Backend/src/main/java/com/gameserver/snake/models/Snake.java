@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a snake in the game.
+ */
 public class Snake {
     private static final String[] COLORS = { "Green", "Brown", "Aquamarine", "Pink", "Gold", "Orange", "Red", "Blue",
             "Purple", "Cyan" };
@@ -19,6 +22,15 @@ public class Snake {
     private Point direction;
     private String playerId;
 
+    /**
+     * Constructs a snake object with the specified parameters.
+     * 
+     * @param numOfPlayers the total number of players in the game
+     * @param playerNum    the player number of the snake, dictates the color
+     * @param playerId     the ID of the player controlling the snake
+     * @param canvas       the canvas object representing the game area
+     * @param speed        the initial speed of the snake
+     */
     public Snake(int numOfPlayers, int playerNum, String playerId, Canvas canvas, int speed) {
         body = new ArrayList<>();
         this.body.add(new Point(
@@ -34,6 +46,11 @@ public class Snake {
         this.direction = DIRECTIONS.get("ArrowUp");
     }
 
+    /**
+     * Constructs a copy of the specified snake object.
+     * 
+     * @param other the snake to be copied
+     */
     public Snake(Snake other) {
         this.body = new ArrayList<>();
         for (Point point : other.body) { // deep copy
@@ -46,20 +63,40 @@ public class Snake {
         this.direction = new Point(other.getDirection());
     }
 
+    /**
+     * 
+     * Changes the direction of the snake based on the specified direction string.
+     * 
+     * @param dir the new direction for the snake ("ArrowUp", "ArrowDown",
+     *            "ArrowLeft", or "ArrowRight")
+     */
     public void changeDir(String dir) {
         if (DIRECTIONS.get(dir) != null) {
             this.direction = DIRECTIONS.get(dir);
         }
     }
 
+    /**
+     * Adds a new head point to the snake's body.
+     * 
+     * @param head the new head point to add
+     */
     public void addHead(Point head) {
         this.body.add(0, head);
     }
 
+    /**
+     * Removes the tail point from the snake's body.
+     */
     public void removeTail() {
         this.body.remove(this.body.size() - 1);
     }
 
+    /**
+     * Retrieves the head point of the snake.
+     * 
+     * @return the head point
+     */
     public Point getHead() {
         return this.body.get(0);
     }

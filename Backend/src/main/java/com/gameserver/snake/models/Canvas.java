@@ -10,13 +10,17 @@ public class Canvas {
     private static final int BASE_SCALE = 1;
     private static final String BASE_COLOR = "oldlace";
 
+    /**
+     * Creates a new canvas with size according to the specified number of players.
+     *
+     * @param numOfPlayers The number of players.
+     */
     public Canvas(int numOfPlayers) {
         this.width = BASE_WIDTH + numOfPlayers * 3;
         this.height = BASE_HEIGHT + numOfPlayers * 3;
         this.color = BASE_COLOR;
         this.scale = BASE_SCALE;
     }
-
 
     public int getWidth() {
         return this.width;

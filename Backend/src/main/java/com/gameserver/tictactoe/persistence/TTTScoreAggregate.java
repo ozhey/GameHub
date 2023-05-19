@@ -2,6 +2,9 @@ package com.gameserver.tictactoe.persistence;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents an aggregation of Tic Tac Toe scores for a user.
+ */
 public class TTTScoreAggregate {
     @JsonProperty("Username")
     private String username;
@@ -10,9 +13,20 @@ public class TTTScoreAggregate {
     @JsonProperty("Games Won")
     private Long gamesWon;
 
+    /**
+     * Constructs an empty TTTScoreAggregate object.
+     */
     public TTTScoreAggregate() {
     }
 
+    /**
+     * Constructs a TTTScoreAggregate object with the specified username, total
+     * games played, and games won.
+     *
+     * @param username         The username associated with the score aggregate.
+     * @param totalGamesPlayed The total number of games played by the user.
+     * @param gamesWon         The number of games won by the user.
+     */
     public TTTScoreAggregate(String username, Long totalGamesPlayed, Long gamesWon) {
         this.username = username;
         this.totalGamesPlayed = totalGamesPlayed;

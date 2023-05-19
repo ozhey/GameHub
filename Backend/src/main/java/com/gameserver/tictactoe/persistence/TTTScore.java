@@ -13,6 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Represents a Tic Tac Toe game score for a user.
+ */
 @Entity
 public class TTTScore {
     @Id
@@ -28,14 +31,22 @@ public class TTTScore {
     @Column(nullable = false)
     private Boolean didWinGame;
 
+    /**
+     * Constructs an empty TTTScore object.
+     */
     public TTTScore() {
     }
 
+    /**
+     * Constructs a TTTScore object with the specified user and game result.
+     *
+     * @param user       The User object associated with the score.
+     * @param didWinGame The game result indicating whether the user won or not.
+     */
     public TTTScore(User user, Boolean didWinGame) {
         this.user = user;
         this.didWinGame = didWinGame;
     }
-
 
     public UUID getId() {
         return this.id;
@@ -64,6 +75,5 @@ public class TTTScore {
     public void setDidWinGame(Boolean didWinGame) {
         this.didWinGame = didWinGame;
     }
-
 
 }

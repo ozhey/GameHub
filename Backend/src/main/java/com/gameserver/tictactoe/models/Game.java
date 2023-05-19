@@ -7,6 +7,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.gameserver.tictactoe.persistence.TTTScoreService;
 
+/**
+ * Represents a Tic Tac Toe game.
+ */
 public class Game {
 
     // internal attributes - not sent over websocket
@@ -20,6 +23,13 @@ public class Game {
     private char winner;
     private Map<Character, String> players;
 
+    /**
+     * Constructs a new Tic Tac Toe game.
+     * 
+     * @param smp             the SMT used for WebSocketcommunication
+     * @param roomId          the ID of the game room
+     * @param tttScoreService the service for managing Tic Tac Toe game scores
+     */
     public Game(SimpMessagingTemplate smp, String roomId, TTTScoreService tttScoreService) {
         this.smp = smp;
         this.roomId = roomId;
@@ -28,10 +38,20 @@ public class Game {
         newGame();
     }
 
+    /**
+     * Resets the game by starting a new game.
+     */
     public void resetGame() {
         newGame();
     }
 
+    /**
+     * Makes a move in the Tic Tac Toe game.
+     * 
+     * @param row      the row index of the move
+     * @param col      the column index of the move
+     * @param playerId the ID of the player making the move
+     */
     public void makeMove(int row, int col, String playerId) {
         if ((row < 0 || row > 2 || col < 0 || col > 2) || (board[row][col] != '-')) {
             return;
@@ -52,6 +72,10 @@ public class Game {
         this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
     }
 
+    /**
+     * Starts a new game by resetting the game state and initializing the board.
+     * Notifies the players about the new game via WebSocket.
+     */
     private void newGame() {
         this.board = new char[3][3];
         this.nextSymbol = 'X';
@@ -60,6 +84,9 @@ public class Game {
         this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
     }
 
+    /**
+     * Initializes the game board with empty cells.
+     */
     private void initializeBoard() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -68,6 +95,13 @@ public class Game {
         }
     }
 
+    /**
+     * Calculates the winner of the Tic Tac Toe game by checking all possible
+     * winning combinations.
+     *
+     * @return the symbol of the winning player ('X' or 'O'), or '-' if there is no
+     *         winner yet.
+     */
     private char calcWinner() {
         for (int row = 0; row < 3; row++) {
             char winner = checkLine(board[row][0], board[row][1], board[row][2]);
@@ -91,6 +125,15 @@ public class Game {
         return checkLine(board[0][2], board[1][1], board[2][0]);
     }
 
+    /**
+     * Checks if the given line of cells has a winning combination.
+     *
+     * @param c1 the symbol in the first cell
+     * @param c2 the symbol in the second cell
+     * @param c3 the symbol in the third cell
+     * @return the symbol of the winning player ('X' or 'O'), or '-' if there is no
+     *         winner yet.
+     */
     private char checkLine(char c1, char c2, char c3) {
         if (c1 != '-' && c1 == c2 && c2 == c3) {
             return c1;
@@ -98,6 +141,15 @@ public class Game {
         return '-';
     }
 
+    /**
+     * Registers a player in the Tic Tac Toe game by assigning their username to a
+     * player symbol.
+     * If the first player registers, they will be assigned 'X'.
+     * If the second player registers, they will be assigned 'O' and the game data
+     * will be sent to both of them via WebSocket.
+     *
+     * @param username the username of the player
+     */
     public void registerPlayer(String username) {
         if (this.players.size() == 0) {
             players.put('X', username);

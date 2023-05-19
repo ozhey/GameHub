@@ -35,6 +35,14 @@ public class SnakeController {
   @Autowired
   private SnakeScoreService snakeScoreService;
 
+  /**
+   * This method handles the commands that are sent by the clients.
+   * 
+   * @param roomId    The ID of the room.
+   * @param sessionId The ID of the session.
+   * @param message   The command message.
+   * @throws Exception If an error occurs.
+   */
   @MessageMapping("/snake_room/{roomId}")
   public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
       WebsocketCommand message)
@@ -71,6 +79,12 @@ public class SnakeController {
     }
   }
 
+  /**
+   * This method is called when a client subscribes to a room.
+   * If the client did not subscribe to the snake game, it will return.
+   * 
+   * @param event The event object.
+   */
   @EventListener
   public void handleSessionSubscribe(SessionSubscribeEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -80,18 +94,33 @@ public class SnakeController {
     }
   }
 
+  /**
+   * This method is called when a client unsubscribes from a room.
+   * 
+   * @param event The event object.
+   */
   @EventListener
   public void handleSessionUnsubscribe(SessionUnsubscribeEvent event) {
     handleLeaveRoom(event);
   }
 
+  /**
+   * This method is called when a client disconnects from a room.
+   * 
+   * @param event The event object.
+   */
   @EventListener
   public void handleSessionDisconnect(SessionDisconnectEvent event) {
     handleLeaveRoom(event);
   }
 
-  // update gameStateMap and subIdToRoomId every time a user unsubscribes or
-  // disconnects from a room
+  /**
+   * This method is called when a client leaves a room.
+   * It updates the gameStateMap and subIdToRoomId every time a user unsubscribes
+   * or disconnects from a room
+   * 
+   * @param event The event object.
+   */
   private void handleLeaveRoom(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();

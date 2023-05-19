@@ -36,9 +36,21 @@ public class SnakeScore {
     @JsonProperty("Have Won")
     private Boolean didWinGame;
 
+    /**
+     * Constructs an empty SnakeScore object.
+     */
     public SnakeScore() {
     }
 
+    /**
+     * Constructs a SnakeScore object with the specified user, number of apples
+     * eaten, and played with others flag. The didWin attribute has to be set
+     * separately.
+     *
+     * @param user             The user associated with the score.
+     * @param numApplesEaten   The number of apples eaten in the game.
+     * @param playedWithOthers Indicates whether the game was played with others.
+     */
     public SnakeScore(User user, int numApplesEaten, boolean playedWithOthers) {
         this.user = user;
         this.numApplesEaten = numApplesEaten;
