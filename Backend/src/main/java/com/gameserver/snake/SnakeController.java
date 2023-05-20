@@ -146,6 +146,11 @@ public class SnakeController {
 
   }
 
+  
+  /** 
+   * A wrapper for logging snake game logs
+   * @param log the log text
+   */
   private void log(String log) {
     System.out.println("[snake]: " + log);
   }

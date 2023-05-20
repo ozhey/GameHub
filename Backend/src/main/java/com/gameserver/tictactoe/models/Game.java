@@ -160,30 +160,58 @@ public class Game {
         this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);
     }
 
+    
+    /** 
+     * @return char[][]
+     */
     public char[][] getBoard() {
         return board;
     }
 
+    
+    /** 
+     * @param newBoard
+     */
     public void setBoard(char[][] newBoard) {
         board = newBoard;
     }
 
+    
+    /** 
+     * @return char
+     */
     public char getWinner() {
         return this.winner;
     }
 
+    
+    /** 
+     * @param winner
+     */
     public void setWinner(char winner) {
         this.winner = winner;
     }
 
+    
+    /** 
+     * @return char
+     */
     public char getNextSymbol() {
         return this.nextSymbol;
     }
 
+    
+    /** 
+     * @param nextSymbol
+     */
     public void setNextSymbol(char nextSymbol) {
         this.nextSymbol = nextSymbol;
     }
 
+    
+    /** 
+     * @return Map<Character, String>
+     */
     public Map<Character, String> getPlayers() {
         return this.players;
     }

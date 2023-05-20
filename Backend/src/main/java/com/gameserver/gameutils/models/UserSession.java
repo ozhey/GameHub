@@ -18,18 +18,34 @@ public class UserSession {
         this.playerId = playerNum;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getRoomId() {
         return this.roomId;
     }
 
+    
+    /** 
+     * @param roomId
+     */
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getPlayerId() {
         return this.playerId;
     }
 
+    
+    /** 
+     * @param playerId
+     */
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }

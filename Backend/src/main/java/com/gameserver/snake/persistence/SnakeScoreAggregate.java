@@ -45,42 +45,82 @@ public class SnakeScoreAggregate {
         this.gamesWon = gamesWon;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getUsername() {
         return this.username;
     }
 
+    
+    /** 
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getTotalApplesEaten() {
         return this.totalApplesEaten;
     }
 
+    
+    /** 
+     * @param totalApplesEaten
+     */
     public void setTotalApplesEaten(Long totalApplesEaten) {
         this.totalApplesEaten = totalApplesEaten;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getTotalGamesPlayed() {
         return this.totalGamesPlayed;
     }
 
+    
+    /** 
+     * @param totalGamesPlayed
+     */
     public void setTotalGamesPlayed(Long totalGamesPlayed) {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getGamesPlayedWithOthers() {
         return this.gamesPlayedWithOthers;
     }
 
+    
+    /** 
+     * @param gamesPlayedWithOthers
+     */
     public void setGamesPlayedWithOthers(Long gamesPlayedWithOthers) {
         this.gamesPlayedWithOthers = gamesPlayedWithOthers;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getGamesWon() {
         return this.gamesWon;
     }
 
+    
+    /** 
+     * @param gamesWon
+     */
     public void setGamesWon(Long gamesWon) {
         this.gamesWon = gamesWon;
     }

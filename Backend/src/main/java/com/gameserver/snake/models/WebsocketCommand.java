@@ -20,18 +20,34 @@ public class WebsocketCommand {
         this.content = content;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getType() {
         return this.type;
     }
 
+    
+    /** 
+     * @param type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getContent() {
         return this.content;
     }
 
+    
+    /** 
+     * @param content
+     */
     public void setContent(String content) {
         this.content = content;
     }

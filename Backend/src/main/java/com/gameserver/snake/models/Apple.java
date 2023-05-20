@@ -39,10 +39,18 @@ public class Apple {
         return false;
     }
 
+    
+    /** 
+     * @return Point
+     */
     public Point getLocation() {
         return this.location;
     }
 
+    
+    /** 
+     * @param appleCoordinates
+     */
     public void setLocation(Point appleCoordinates) {
         this.location = appleCoordinates;
     }

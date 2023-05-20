@@ -101,10 +101,18 @@ public class Snake {
         return this.body.get(0);
     }
 
+    
+    /** 
+     * @return List<Point>
+     */
     public List<Point> getBody() {
         return this.body;
     }
 
+    
+    /** 
+     * @param body
+     */
     public void setBody(List<Point> body) {
         this.body = body;
     }
@@ -113,42 +121,82 @@ public class Snake {
         this.speed = 0;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getSpeed() {
         return this.speed;
     }
 
+    
+    /** 
+     * @param speed
+     */
     public void setSpeed(int speed) {
         this.speed = speed;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getColor() {
         return this.color;
     }
 
+    
+    /** 
+     * @param color
+     */
     public void setColor(String color) {
         this.color = color;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getScore() {
         return this.score;
     }
 
+    
+    /** 
+     * @param score
+     */
     public void setScore(int score) {
         this.score = score;
     }
 
+    
+    /** 
+     * @return Point
+     */
     public Point getDirection() {
         return this.direction;
     }
 
+    
+    /** 
+     * @param direction
+     */
     public void setDirection(Point direction) {
         this.direction = direction;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getPlayerId() {
         return this.playerId;
     }
 
+    
+    /** 
+     * @param playerId
+     */
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }

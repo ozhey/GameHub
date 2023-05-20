@@ -219,6 +219,11 @@ public class TicTacToeController {
     log("user " + sessId + " joined room " + roomId);
   }
 
+  /**
+   * A wrapper for any logs related to the tictactoe game
+   * 
+   * @param log the text to be wrapped and logged
+   */
   private void log(String log) {
     System.out.println("[tictactoe]: " + log);
   }

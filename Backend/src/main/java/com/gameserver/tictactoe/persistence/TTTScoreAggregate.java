@@ -33,26 +33,50 @@ public class TTTScoreAggregate {
         this.gamesWon = gamesWon;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getUsername() {
         return this.username;
     }
 
+    
+    /** 
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getTotalGamesPlayed() {
         return this.totalGamesPlayed;
     }
 
+    
+    /** 
+     * @param totalGamesPlayed
+     */
     public void setTotalGamesPlayed(Long totalGamesPlayed) {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
+    
+    /** 
+     * @return Long
+     */
     public Long getGamesWon() {
         return this.gamesWon;
     }
 
+    
+    /** 
+     * @param gamesWon
+     */
     public void setGamesWon(Long gamesWon) {
         this.gamesWon = gamesWon;
     }

@@ -40,30 +40,58 @@ public class User {
         this.password = password;
     }
 
+    
+    /** 
+     * @return UUID
+     */
     public UUID getId() {
         return this.id;
     }
 
+    
+    /** 
+     * @param id
+     */
     public void setId(UUID id) {
         this.id = id;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getUsername() {
         return this.username;
     }
 
+    
+    /** 
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getPassword() {
         return this.password;
     }
 
+    
+    /** 
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String toString() {
         return "{" +

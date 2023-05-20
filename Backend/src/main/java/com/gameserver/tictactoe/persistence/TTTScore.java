@@ -48,30 +48,58 @@ public class TTTScore {
         this.didWinGame = didWinGame;
     }
 
+    
+    /** 
+     * @return UUID
+     */
     public UUID getId() {
         return this.id;
     }
 
+    
+    /** 
+     * @param id
+     */
     public void setId(UUID id) {
         this.id = id;
     }
 
+    
+    /** 
+     * @return User
+     */
     public User getUser() {
         return this.user;
     }
 
+    
+    /** 
+     * @param user
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    
+    /** 
+     * @return Boolean
+     */
     public Boolean isDidWinGame() {
         return this.didWinGame;
     }
 
+    
+    /** 
+     * @return Boolean
+     */
     public Boolean getDidWinGame() {
         return this.didWinGame;
     }
 
+    
+    /** 
+     * @param didWinGame
+     */
     public void setDidWinGame(Boolean didWinGame) {
         this.didWinGame = didWinGame;
     }

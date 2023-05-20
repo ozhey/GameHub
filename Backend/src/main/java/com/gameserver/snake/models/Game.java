@@ -182,46 +182,90 @@ public class Game {
         return playerIdToColor;
     }
 
+    
+    /** 
+     * @return Map<String, Snake>
+     */
     public Map<String, Snake> getSnakes() {
         return this.snakes;
     }
 
+    
+    /** 
+     * @param snakes
+     */
     public void setSnakes(Map<String, Snake> snakes) {
         this.snakes = snakes;
     }
 
+    
+    /** 
+     * @return Apple
+     */
     public Apple getApple() {
         return this.apple;
     }
 
+    
+    /** 
+     * @param apple
+     */
     public void setApple(Apple apple) {
         this.apple = apple;
     }
 
+    
+    /** 
+     * @return Canvas
+     */
     public Canvas getCanvas() {
         return this.canvas;
     }
 
+    
+    /** 
+     * @param canvas
+     */
     public void setCanvas(Canvas canvas) {
         this.canvas = canvas;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getWinner() {
         return this.winner;
     }
 
+    
+    /** 
+     * @param winner
+     */
     public void setWinner(String winner) {
         this.winner = winner;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getPlayersCount() {
         return this.playersCount;
     }
 
+    
+    /** 
+     * @param playersCount
+     */
     public void setPlayersCount(int playersCount) {
         this.playersCount = playersCount;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getTime() {
         return this.time;
     }

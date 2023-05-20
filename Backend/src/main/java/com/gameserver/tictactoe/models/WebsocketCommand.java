@@ -26,34 +26,66 @@ public class WebsocketCommand {
         this.col = col;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getCommand() {
         return this.command;
     }
 
+    
+    /** 
+     * @param command
+     */
     public void setCommand(String command) {
         this.command = command;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getContent() {
         return this.content;
     }
 
+    
+    /** 
+     * @param content
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getRow() {
         return this.row;
     }
 
+    
+    /** 
+     * @param row
+     */
     public void setRow(int row) {
         this.row = row;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getCol() {
         return this.col;
     }
 
+    
+    /** 
+     * @param col
+     */
     public void setCol(int col) {
         this.col = col;
     }

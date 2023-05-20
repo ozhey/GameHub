@@ -22,34 +22,66 @@ public class Canvas {
         this.scale = BASE_SCALE;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getWidth() {
         return this.width;
     }
 
+    
+    /** 
+     * @param width
+     */
     public void setWidth(int width) {
         this.width = width;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getHeight() {
         return this.height;
     }
 
+    
+    /** 
+     * @param height
+     */
     public void setHeight(int height) {
         this.height = height;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getColor() {
         return this.color;
     }
 
+    
+    /** 
+     * @param color
+     */
     public void setColor(String color) {
         this.color = color;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getScale() {
         return this.scale;
     }
 
+    
+    /** 
+     * @param scale
+     */
     public void setScale(int scale) {
         this.scale = scale;
     }
