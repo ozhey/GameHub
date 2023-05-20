@@ -174,7 +174,7 @@ public class Game {
      * 
      * @return a map of player ID to color
      */
-    public Map<String, String> FetchSnakePlayerIdToColor() {
+    public Map<String, String> fetchSnakePlayerIdToColor() {
         Map<String, String> playerIdToColor = new HashMap<>(this.snakes.size());
         for (Map.Entry<String, Snake> snakeEntry : this.snakes.entrySet()) {
             playerIdToColor.put(snakeEntry.getKey(), snakeEntry.getValue().getColor());

@@ -66,7 +66,7 @@ public class Game {
         this.nextSymbol = this.nextSymbol == 'X' ? 'O' : 'X';
         this.winner = calcWinner();
         // don't persist if player played against himself
-        if (this.winner != '-' && this.players.get('X') != this.players.get('O')) {
+        if (this.winner != '-' && !this.players.get('O').equals(this.players.get('X'))) {
             tttScoreService.persistGameResult(this.winner, this.players);
         }
         this.smp.convertAndSend("/topic/ttt_room/" + roomId, this);

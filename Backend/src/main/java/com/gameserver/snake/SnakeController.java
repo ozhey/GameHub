@@ -57,7 +57,7 @@ public class SnakeController {
           roomIdToGame.put(roomId, game);
         }
         game.resetGame(players);
-        Map<String, String> playerIdToColor = game.FetchSnakePlayerIdToColor();
+        Map<String, String> playerIdToColor = game.fetchSnakePlayerIdToColor();
         smp.convertAndSend("/topic/snake_room/" + roomId, playerIdToColor);
         game.start(players);
         smp.convertAndSend("/topic/snake_room/" + roomId, game);
@@ -76,21 +76,6 @@ public class SnakeController {
         playersByRoom.put(roomId, players);
         log("room " + roomId + " has " + players.size() + " players");
         break;
-    }
-  }
-
-  /**
-   * This method is called when a client subscribes to a room.
-   * If the client did not subscribe to the snake game, it will return.
-   * 
-   * @param event The event object.
-   */
-  @EventListener
-  public void handleSessionSubscribe(SessionSubscribeEvent event) {
-    StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-    String dest = headerAccessor.getDestination();
-    if (dest != null && !dest.startsWith("/topic/snake")) { // player subscribed to other game
-      return;
     }
   }
 
