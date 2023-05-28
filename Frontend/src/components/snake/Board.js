@@ -61,9 +61,6 @@ const Board = ({ wsRef, roomId, setRoomId, username }) => {
 
             if (payload.snakes) { // gamestate message
                 setGameState(payload);
-                // if (payload.time === 0) {
-                //     setCanvasDimensions(payload.canvas)
-                // }
                 return;
             }
 
