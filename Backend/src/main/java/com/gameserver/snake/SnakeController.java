@@ -43,7 +43,7 @@ public class SnakeController {
    * @throws Exception If an error occurs.
    */
   @MessageMapping("/snake_room/{roomId}")
-  public void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
+  public synchronized void command(@DestinationVariable String roomId, @Header("simpSessionId") String sessionId,
       WebsocketCommand message)
       throws Exception {
     Game game = roomIdToGame.get(roomId);
@@ -105,7 +105,7 @@ public class SnakeController {
    * 
    * @param event The event object.
    */
-  private void handleLeaveRoom(AbstractSubProtocolEvent event) {
+  private synchronized void handleLeaveRoom(AbstractSubProtocolEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessId = headerAccessor.getSessionId();
     if (!sessionIdToUserSession.containsKey(sessId)) { // user does not play snake

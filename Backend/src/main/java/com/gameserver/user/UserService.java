@@ -43,7 +43,7 @@ public class UserService {
      * @throws UserAlreadyExistsException if a user with the same username already
      *                                    exists.
      */
-    public void createUser(User user) {
+    public synchronized void createUser(User user) {
         Optional<User> userByUsername = userRepository.findByUsername(user.getUsername());
         if (userByUsername.isPresent()) {
             throw new UserAlreadyExistsException("username is in use");

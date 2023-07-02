@@ -10,11 +10,11 @@ const LoginForm = ({ setUsername }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const response = await authApi.loginOrRegister(user, password, isRegistering);
-            setUsername(response.username);
-        } catch (error) {
-            setError(error.message);
+        const response = await authApi.loginOrRegister(user, password, isRegistering);
+        if (response.error !== undefined) {
+            setError(response.error);
+        } else {
+            setUsername(response.username)
         }
     };
 

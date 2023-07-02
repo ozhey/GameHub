@@ -9,14 +9,9 @@ const authApi = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
-
-            if (response.ok) {
-                return await response.json();
-            } else {
-                throw new Error('Invalid email or password');
-            }
+            return await response.json();
         } catch (error) {
-            throw new Error(error.message);
+            return { error: "error occured" }
         }
     }
 };
